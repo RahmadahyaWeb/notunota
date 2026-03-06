@@ -212,7 +212,7 @@
                 return {
                     zoom: 0.7,
                     baseWidth: 800,
-                    baseHeight: 1132, // Sesuaikan dengan tinggi asli template Anda
+                    baseHeight: 1132,
 
                     fitToScreen() {
                         const containerWidth = this.$refs.container.clientWidth - 64;

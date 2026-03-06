@@ -58,7 +58,7 @@
                     <flux:navmenu.item icon="users" href="{{ route('customer.index') }}">
                         Daftar Pelanggan
                     </flux:navmenu.item>
-                    <flux:navmenu.item icon="shopping-bag" href="#">Katalog Produk</flux:navmenu.item>
+                    <flux:navmenu.item icon="shopping-bag" href="{{ route('product.index') }}">Katalog Produk</flux:navmenu.item>
 
                     <flux:navmenu.separator />
 

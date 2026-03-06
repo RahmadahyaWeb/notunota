@@ -15,6 +15,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // CUSTOMER
     Route::livewire('customer', 'pages::customer.index')->name('customer.index');
+
+    // PRODUCT
+    Route::livewire('product', 'pages::product.index')->name('product.index');
 });
 
 Route::get('invoice/preview/{token}', PreviewController::class)->name('invoice.preview');
