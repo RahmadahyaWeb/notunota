@@ -43,30 +43,35 @@ class MasterDataSeeder extends Seeder
         $customers = [
             [
                 'name' => 'PT Sinar Abadi',
+                'code' => 'CUST001',
                 'phone' => '081111111111',
                 'email' => 'sinarabadi@email.com',
                 'address' => 'Pontianak',
             ],
             [
                 'name' => 'CV Berkah Mandiri',
+                'code' => 'CUST002',
                 'phone' => '082222222222',
                 'email' => 'berkah@email.com',
                 'address' => 'Kubu Raya',
             ],
             [
                 'name' => 'Budi Santoso',
+                'code' => 'CUST003',
                 'phone' => '083333333333',
                 'email' => 'budi@email.com',
                 'address' => 'Singkawang',
             ],
             [
                 'name' => 'Andi Wijaya',
+                'code' => 'CUST004',
                 'phone' => '084444444444',
                 'email' => 'andi@email.com',
                 'address' => 'Mempawah',
             ],
             [
                 'name' => 'Sari Dewi',
+                'code' => 'CUST005',
                 'phone' => '085555555555',
                 'email' => 'sari@email.com',
                 'address' => 'Sambas',
@@ -76,6 +81,7 @@ class MasterDataSeeder extends Seeder
         foreach ($customers as $customer) {
             Customer::create([
                 'business_id' => $business->id,
+                'code' => $customer['code'],
                 'name' => $customer['name'],
                 'phone' => $customer['phone'],
                 'email' => $customer['email'],

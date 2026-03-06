@@ -6,11 +6,12 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
-
-use function Spatie\LaravelPdf\Support\pdf;
+use Livewire\WithPagination;
 
 new class extends Component
 {
+    use WithPagination;
+
     public $businessId;
 
     #[Url(history: true, except: '')]

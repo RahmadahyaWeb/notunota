@@ -133,7 +133,12 @@ new class extends Component
         ];
 
         $invoice = $invoiceService->create($business, $payload);
-        session()->flash('success', 'Invoice created successfully.');
+
+        $this->dispatch('notify',
+            title: 'Berhasil',
+            message: 'Invoice berhasil dibuat.',
+            type: 'success'
+        );
     }
 
     #[Computed()]

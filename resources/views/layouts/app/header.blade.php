@@ -29,20 +29,21 @@
 
             {{-- Dropdown Khusus Invoice (User Friendly & Terfokus) --}}
             <flux:dropdown>
-                <flux:navbar.item icon="document-text" icon-trailing="chevron-down">Invoices</flux:navbar.item>
+                <flux:navbar.item icon="document-text" icon-trailing="chevron-down">Invoice</flux:navbar.item>
 
                 <flux:navmenu>
-                    {{-- Hasil: /invoice --}}
-                    <flux:navmenu.item icon="list-bullet" href="{{ route('invoice.index') }}">
-                        Semua Invoice
+                    <flux:navmenu.item icon="plus-circle" href="{{ route('invoice.create') }}">
+                        Buat Invoice
                     </flux:navmenu.item>
 
-                    {{-- Hasil: /invoice?status=sent --}}
+                    <flux:navmenu.item icon="list-bullet" href="{{ route('invoice.index') }}">
+                        Daftar Invoice
+                    </flux:navmenu.item>
+
                     <flux:navmenu.item icon="clock" href="{{ route('invoice.index', ['status' => 'sent']) }}">
                         Tagihan Aktif
                     </flux:navmenu.item>
 
-                    {{-- Hasil: /invoice?status=paid --}}
                     <flux:navmenu.item icon="check-circle" href="{{ route('invoice.index', ['status' => 'paid']) }}">
                         Sudah Lunas
                     </flux:navmenu.item>
@@ -54,7 +55,9 @@
                 <flux:navbar.item icon="user-group" icon-trailing="chevron-down">Manajemen</flux:navbar.item>
 
                 <flux:navmenu>
-                    <flux:navmenu.item icon="users" href="#">Daftar Pelanggan</flux:navmenu.item>
+                    <flux:navmenu.item icon="users" href="{{ route('customer.index') }}">
+                        Daftar Pelanggan
+                    </flux:navmenu.item>
                     <flux:navmenu.item icon="shopping-bag" href="#">Katalog Produk</flux:navmenu.item>
 
                     <flux:navmenu.separator />
@@ -102,7 +105,25 @@
         </flux:sidebar.header>
 
         <flux:sidebar.nav>
-            <flux:sidebar.item icon="home" href="#" current>Home</flux:sidebar.item>
+            <flux:sidebar.item icon="layout-grid" href="#" current>Dashboard</flux:sidebar.item>
+
+            <flux:sidebar.group expandable heading="Invoice" class="grid">
+                <flux:sidebar.item .item icon="plus-circle" href="{{ route('invoice.create') }}">
+                    Buat Invoice
+                </flux:sidebar.item>
+
+                <flux:sidebar.item icon="list-bullet" href="{{ route('invoice.index') }}">
+                    Semua Invoice
+                </flux:sidebar.item>
+
+                <flux:sidebar.item icon="clock" href="{{ route('invoice.index', ['status' => 'sent']) }}">
+                    Tagihan Aktif
+                </flux:sidebar.item>
+
+                <flux:sidebar.item icon="check-circle" href="{{ route('invoice.index', ['status' => 'paid']) }}">
+                    Sudah Lunas
+                </flux:sidebar.item>
+            </flux:sidebar.group>
         </flux:sidebar.nav>
 
         <flux:sidebar.spacer />
