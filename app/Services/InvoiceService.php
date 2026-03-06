@@ -77,4 +77,57 @@ class InvoiceService
             return $invoice->load('items', 'customer');
         });
     }
+
+    public function update(Invoice $invoice, array $payload): Invoice
+    {
+        return DB::transaction(function () use ($invoice, $payload) {
+
+            // 1️⃣ Hitung ulang subtotal
+            $subtotal = 0;
+
+            foreach ($payload['items'] as $item) {
+
+                $qty = (float) $item['qty'];
+                $price = (float) $item['price'];
+
+                $line_total = $qty * $price;
+
+                $subtotal += $line_total;
+            }
+
+            $total = $subtotal;
+
+            // 2️⃣ Update invoice
+            $invoice->update([
+                'customer_id' => $payload['customer_id'],
+                'invoice_date' => $payload['invoice_date'],
+                'due_date' => $payload['due_date'] ?? null,
+                'subtotal' => $subtotal,
+                'total' => $total,
+                'template' => $payload['template'] ?? $invoice->template,
+            ]);
+
+            // 3️⃣ Hapus item lama
+            $invoice->items()->delete();
+
+            // 4️⃣ Insert ulang item
+            foreach ($payload['items'] as $item) {
+
+                $qty = (float) $item['qty'];
+                $price = (float) $item['price'];
+                $line_total = $qty * $price;
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'product_id' => $item['product_id'] ?? null,
+                    'description' => $item['description'],
+                    'qty' => $qty,
+                    'price' => $price,
+                    'total' => $line_total,
+                ]);
+            }
+
+            return $invoice->load('items', 'customer');
+        });
+    }
 }

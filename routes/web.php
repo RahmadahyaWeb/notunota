@@ -10,7 +10,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // INVOICES
     Route::livewire('invoice', 'pages::invoice.index')->name('invoice.index');
-    Route::livewire('invoice/create', 'pages::invoice.create')->name('invoice.create');
+    Route::livewire('invoice/create/{token?}', 'pages::invoice.create')
+        ->name('invoice.create');
 
     // CUSTOMER
     Route::livewire('customer', 'pages::customer.index')->name('customer.index');

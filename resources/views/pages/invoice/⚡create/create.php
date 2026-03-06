@@ -26,17 +26,51 @@ new class extends Component
 
     public $template = 'classic';
 
-    public function mount()
+    public $invoice;
+
+    public $token;
+
+    public function mount($token = null)
     {
         $business = Auth::user()->business;
 
         $this->customers = $business->customers()->get();
         $this->products = $business->products()->where('is_active', true)->get();
 
-        $this->invoice_date = now()->format('Y-m-d');
-        $this->due_date = now()->addDays(7)->format('Y-m-d');
+        if ($token) {
 
-        $this->add_item();
+            $invoice = $business->invoices()
+                ->with('items')
+                ->where('public_token', $token)
+                ->where('business_id', $business->id)
+                ->firstOrFail();
+
+            $this->invoice = $invoice;
+
+            $this->customer_id = $invoice->customer_id;
+            $this->invoice_date = $invoice->invoice_date;
+            $this->due_date = $invoice->due_date;
+            $this->template = $invoice->template;
+
+            $this->items = $invoice->items->map(function ($item) {
+                return [
+                    'product_id' => $item->product_id,
+                    'description' => $item->description,
+                    'qty' => $item->qty,
+                    'price' => $item->price,
+                    'total' => $item->total,
+                ];
+            })->toArray();
+
+            $this->calculate_totals();
+
+        } else {
+
+            $this->invoice_date = now()->format('Y-m-d');
+            $this->due_date = now()->addDays(7)->format('Y-m-d');
+
+            $this->add_item();
+        }
     }
 
     public function add_item()
@@ -132,13 +166,27 @@ new class extends Component
             'template' => $this->template,
         ];
 
-        $invoice = $invoiceService->create($business, $payload);
+        if ($this->invoice) {
 
-        $this->dispatch('notify',
-            title: 'Berhasil',
-            message: 'Invoice berhasil dibuat.',
-            type: 'success'
-        );
+            $invoiceService->update($this->invoice, $payload);
+
+            $this->dispatch('notify',
+                title: 'Berhasil',
+                message: 'Invoice berhasil diperbarui.',
+                type: 'success'
+            );
+
+        } else {
+
+            $invoiceService->create($business, $payload);
+
+            $this->dispatch('notify',
+                title: 'Berhasil',
+                message: 'Invoice berhasil dibuat.',
+                type: 'success'
+            );
+
+        }
     }
 
     #[Computed()]

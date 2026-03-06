@@ -7,7 +7,9 @@
         <div class="space-y-6">
 
             <div>
-                <h2 class="text-xl font-semibold">Buat Invoice Baru</h2>
+                <h2 class="text-xl font-semibold">
+                    {{ $invoice ? 'Edit Invoice' : 'Buat Invoice Baru' }}
+                </h2>
                 <p class="text-sm text-gray-500">
                     Lengkapi informasi di bawah ini untuk membuat invoice.
                 </p>

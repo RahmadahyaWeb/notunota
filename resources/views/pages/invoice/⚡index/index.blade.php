@@ -145,7 +145,10 @@
                                         href="{{ route('invoice.preview', $invoice->public_token) }}" target="_blank">
                                         Preview
                                     </flux:menu.item>
-                                    <flux:menu.item icon="pencil-square">Edit</flux:menu.item>
+                                    <flux:menu.item icon="pencil-square"
+                                        href="{{ route('invoice.create', $invoice->public_token) }}">
+                                        Edit
+                                    </flux:menu.item>
                                     <flux:menu.separator />
                                     <flux:menu.item variant="danger" icon="trash"
                                         wire:click="confirmDelete({{ $invoice->id }})">
