@@ -63,8 +63,53 @@
             </div>
         </div>
 
+        @if (count($selected_invoices))
+            <div class="mb-4 p-4 border rounded-xl bg-zinc-50">
+
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+
+                    {{-- Info jumlah --}}
+                    <div class="flex items-center gap-2">
+                        <flux:icon name="check-circle" class="w-5 h-5 text-green-600" />
+
+                        <flux:text class="font-medium">
+                            {{ count($selected_invoices) }} invoice dipilih
+                        </flux:text>
+                    </div>
+
+                    <flux:spacer class="hidden sm:block" />
+
+                    {{-- Actions --}}
+                    <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+
+                        <flux:select wire:model="bulk_status" placeholder="Ubah status" class="w-full sm:w-44">
+                            <flux:select.option value="draft">Draft</flux:select.option>
+                            <flux:select.option value="sent">Sent</flux:select.option>
+                            <flux:select.option value="paid">Paid</flux:select.option>
+                            <flux:select.option value="overdue">Overdue</flux:select.option>
+                        </flux:select>
+
+                        <flux:button wire:click="bulkUpdateStatus" variant="primary" class="w-full sm:w-auto">
+                            Terapkan
+                        </flux:button>
+
+                        <flux:button wire:click="$set('selected_invoices', [])" variant="subtle" icon="x-mark"
+                            class="w-full sm:w-auto">
+                            Batal
+                        </flux:button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        @endif
+
         <flux:table :paginate="$this->invoices">
             <flux:table.columns>
+                <flux:table.column>
+                    <input type="checkbox" wire:model.change.live="select_all">
+                </flux:table.column>
                 <flux:table.column>Nomor Invoice</flux:table.column>
                 <flux:table.column>Pelanggan</flux:table.column>
                 <flux:table.column>Tanggal</flux:table.column>
@@ -78,6 +123,10 @@
                 {{-- Loop data di sini --}}
                 @forelse ($this->invoices as $invoice)
                     <flux:table.row>
+                        <flux:table.cell>
+                            <input type="checkbox" value="{{ $invoice->id }}"
+                                wire:model.change.live="selected_invoices">
+                        </flux:table.cell>
                         <flux:table.cell class="font-medium text-zinc-900">#{{ $invoice->invoice_number }}
                         </flux:table.cell>
                         <flux:table.cell>{{ $invoice->customer->name }}</flux:table.cell>

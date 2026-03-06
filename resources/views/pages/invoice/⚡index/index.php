@@ -16,6 +16,12 @@ new class extends Component
 
     public $delete_id;
 
+    public $selected_invoices = [];
+
+    public $bulk_status = '';
+
+    public $select_all = false;
+
     #[Url(history: true, except: '')]
     public $status = '';
 
@@ -62,6 +68,41 @@ new class extends Component
         $this->dispatch('notify',
             title: 'Berhasil',
             message: 'Data invoice berhasil dihapus.',
+            type: 'success'
+        );
+    }
+
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selected_invoices = $this->invoices->pluck('id')->toArray();
+        } else {
+            $this->selected_invoices = [];
+        }
+    }
+
+    public function updatedSelectedInvoices()
+    {
+        $this->select_all = count($this->selected_invoices) === $this->invoices->count();
+    }
+
+    public function bulkUpdateStatus()
+    {
+        if (empty($this->selected_invoices) || ! $this->bulk_status) {
+            return;
+        }
+
+        Invoice::whereIn('id', $this->selected_invoices)
+            ->where('business_id', $this->businessId)
+            ->update([
+                'status' => $this->bulk_status,
+            ]);
+
+        $this->reset('selected_invoices', 'bulk_status', 'select_all');
+
+        $this->dispatch('notify',
+            title: 'Berhasil',
+            message: 'Status beberapa invoice berhasil diperbarui.',
             type: 'success'
         );
     }
