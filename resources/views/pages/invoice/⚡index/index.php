@@ -14,6 +14,8 @@ new class extends Component
 
     public $businessId;
 
+    public $delete_id;
+
     #[Url(history: true, except: '')]
     public $status = '';
 
@@ -38,6 +40,30 @@ new class extends Component
                 ->where('status', 'overdue')
                 ->sum('total'),
         ];
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->delete_id = $id;
+
+        $this->modal('delete-invoice')->show();
+    }
+
+    public function delete()
+    {
+        Invoice::where('id', $this->delete_id)
+            ->where('business_id', $this->businessId)
+            ->delete();
+
+        $this->reset('delete_id');
+
+        $this->modal('delete-invoice')->close();
+
+        $this->dispatch('notify',
+            title: 'Berhasil',
+            message: 'Data invoice berhasil dihapus.',
+            type: 'success'
+        );
     }
 
     #[Computed()]

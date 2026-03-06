@@ -98,7 +98,10 @@
                                     </flux:menu.item>
                                     <flux:menu.item icon="pencil-square">Edit</flux:menu.item>
                                     <flux:menu.separator />
-                                    <flux:menu.item variant="danger" icon="trash">Hapus</flux:menu.item>
+                                    <flux:menu.item variant="danger" icon="trash"
+                                        wire:click="confirmDelete({{ $invoice->id }})">
+                                        Hapus
+                                    </flux:menu.item>
                                 </flux:menu>
                             </flux:dropdown>
                         </flux:table.cell>
@@ -115,4 +118,33 @@
             </flux:table.rows>
         </flux:table>
     </flux:card>
+
+    <flux:modal name="delete-invoice" class="min-w-88">
+        <div class="space-y-6">
+
+            <div>
+                <flux:heading size="lg">Hapus Invoice?</flux:heading>
+
+                <flux:text class="mt-2">
+                    Anda akan menghapus data invoice ini.<br>
+                    Tindakan ini tidak dapat dibatalkan.
+                </flux:text>
+            </div>
+
+            <div class="flex gap-2">
+                <flux:spacer />
+
+                <flux:modal.close>
+                    <flux:button variant="ghost">
+                        Batal
+                    </flux:button>
+                </flux:modal.close>
+
+                <flux:button wire:click="delete" variant="danger">
+                    Hapus Invoice
+                </flux:button>
+
+            </div>
+        </div>
+    </flux:modal>
 </div>

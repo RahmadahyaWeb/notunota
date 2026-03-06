@@ -49,9 +49,9 @@ new class extends Component
         Customer::updateOrCreate(
             [
                 'id' => $this->customer_id,
+                'business_id' => $this->businessId,
             ],
             [
-                'business_id' => $this->businessId,
                 'code' => $this->code,
                 'name' => $this->name,
                 'email' => $this->email,
