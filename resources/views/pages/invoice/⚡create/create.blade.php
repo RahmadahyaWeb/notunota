@@ -32,6 +32,21 @@
                 </flux:select>
             </div>
 
+            {{-- Template Invoice --}}
+            <div class="space-y-4">
+                <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                    Template Invoice
+                </h3>
+
+                <flux:select wire:model.change.live="template" label="Template"
+                    description="Pilih tampilan invoice yang akan digunakan.">
+
+                    <option value="classic">Classic (A4)</option>
+                    <option value="thermal">Thermal / Nota</option>
+
+                </flux:select>
+            </div>
+
             {{-- Tanggal --}}
             <div class="space-y-4">
                 <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
@@ -133,7 +148,7 @@
         </div>
     </flux:card>
 
-    <div x-data="invoicePreview()" x-init="fitToScreen()" class="space-y-6">
+    <div wire:key="preview-{{ $template }}" x-data="invoicePreview()" class="space-y-6">
 
         {{-- Header --}}
         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm mb-6">
@@ -193,7 +208,7 @@
 
         {{-- Wrapper Abu-abu: Sekarang tingginya dinamis --}}
         <div x-ref="container"
-            class="bg-gray-100 p-4 sm:p-8 rounded-xl overflow-hidden flex justify-center border border-gray-200 duration-300"
+            class="bg-gray-100 p-4 sm:p-8 rounded-xl flex justify-center border border-gray-200 duration-300"
             :style="`height: auto; min-height: ${(baseHeight * zoom) + 64}px;`">
             {{-- Sizing Container: Mengunci dimensi layout agar tidak ada whitespace --}}
             <div class="relative shadow-2xl" :style="`width: ${baseWidth * zoom}px; height: ${baseHeight * zoom}px;`">
@@ -211,13 +226,43 @@
             function invoicePreview() {
                 return {
                     zoom: 0.7,
-                    baseWidth: 800,
-                    baseHeight: 1132,
+                    // Inisialisasi awal
+                    baseWidth: @js($template === 'thermal' ? 302 : 800),
+                    baseHeight: @js($template === 'thermal' ? 600 : 1132),
+
+                    init() {
+                        // Memantau perubahan template dari Livewire secara langsung
+                        this.$watch('$wire.template', (value) => {
+                            this.updateDimensions(value);
+                        });
+
+                        window.addEventListener('resize', () => {
+                            this.fitToScreen()
+                        });
+
+
+                        // Jalankan fitToScreen setelah inisialisasi
+                        this.$nextTick(() => this.fitToScreen());
+                    },
+
+                    updateDimensions(template) {
+                        if (template === 'thermal') {
+                            this.baseWidth = 302; // Standar 80mm biasanya ~302px di layar
+                            this.baseHeight = 800; // Thermal biasanya tinggi dinamis
+                        } else {
+                            this.baseWidth = 800; // A4
+                            this.baseHeight = 1132;
+                        }
+                        this.fitToScreen();
+                    },
 
                     fitToScreen() {
-                        const containerWidth = this.$refs.container.clientWidth - 64;
-                        const ratio = containerWidth / this.baseWidth;
-                        this.zoom = ratio > 1 ? 1 : ratio.toFixed(2);
+                        // Beri sedikit delay agar DOM selesai merender perubahan template
+                        this.$nextTick(() => {
+                            const containerWidth = this.$refs.container.clientWidth - 64;
+                            const ratio = containerWidth / this.baseWidth;
+                            this.zoom = ratio > 1 ? 1 : parseFloat(ratio.toFixed(2));
+                        });
                     }
                 }
             }
