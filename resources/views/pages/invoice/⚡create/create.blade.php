@@ -41,8 +41,10 @@
                 <flux:select wire:model.change.live="template" label="Template"
                     description="Pilih tampilan invoice yang akan digunakan.">
 
-                    <option value="classic">Classic (A4)</option>
-                    <option value="thermal">Thermal / Nota</option>
+                    <option value="classic">Classic</option>
+                    <option value="thermal">Thermal</option>
+                    <option value="minimal">Minimal</option>
+                    <option value="ms-word">MS Word</option>
 
                 </flux:select>
             </div>
@@ -206,18 +208,29 @@
             </div>
         </div>
 
-        {{-- Wrapper Abu-abu: Sekarang tingginya dinamis --}}
-        <div x-ref="container"
-            class="bg-gray-100 p-4 sm:p-8 rounded-xl flex justify-center border border-gray-200 duration-300"
-            :style="`height: auto; min-height: ${(baseHeight * zoom) + 64}px;`">
-            {{-- Sizing Container: Mengunci dimensi layout agar tidak ada whitespace --}}
-            <div class="relative shadow-2xl" :style="`width: ${baseWidth * zoom}px; height: ${baseHeight * zoom}px;`">
-                {{-- Scaled Element --}}
-                <div class="absolute left-0 top-0 origin-top-left bg-white"
-                    :style="`transform: scale(${zoom}); width: ${baseWidth}px; height: ${baseHeight}px;`">
-                    @includeIf('invoices.templates.' . $template, ['data' => $this->previewData])
+        {{-- Wrapper Preview --}}
+        <div x-ref="container" class="bg-gray-100 p-4 sm:p-8 rounded-xl border border-gray-200 overflow-auto">
+
+            <div class="flex justify-center min-w-max">
+
+                {{-- Sizing Container --}}
+                <div class="relative shadow-2xl"
+                    :style="`width: ${baseWidth * zoom}px; height: ${baseHeight * zoom}px;`">
+
+                    {{-- Scaled Element --}}
+                    <div class="absolute left-0 top-0 origin-top-left bg-white"
+                        :style="`transform: scale(${zoom}); width: ${baseWidth}px; height: ${baseHeight}px;`">
+
+                        @includeIf('invoices.templates.' . $template, [
+                            'data' => $this->previewData,
+                        ])
+
+                    </div>
+
                 </div>
+
             </div>
+
         </div>
     </div>
 
@@ -227,8 +240,8 @@
                 return {
                     zoom: 0.7,
                     // Inisialisasi awal
-                    baseWidth: @js($template === 'thermal' ? 302 : 800),
-                    baseHeight: @js($template === 'thermal' ? 600 : 1132),
+                    baseWidth: 800, // Default untuk A4
+                    baseHeight: 1132,
 
                     init() {
                         // Memantau perubahan template dari Livewire secara langsung
@@ -246,13 +259,9 @@
                     },
 
                     updateDimensions(template) {
-                        if (template === 'thermal') {
-                            this.baseWidth = 302; // Standar 80mm biasanya ~302px di layar
-                            this.baseHeight = 800; // Thermal biasanya tinggi dinamis
-                        } else {
-                            this.baseWidth = 800; // A4
-                            this.baseHeight = 1132;
-                        }
+                        this.baseWidth = 800; // A4
+                        this.baseHeight = 1132;
+
                         this.fitToScreen();
                     },
 

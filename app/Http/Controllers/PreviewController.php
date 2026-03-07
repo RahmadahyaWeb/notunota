@@ -32,7 +32,7 @@ class PreviewController extends Controller
         ];
 
         return pdf()
-            ->view('pdf.preview', compact('data'))
+            ->view('pdf.classic', compact('data'))
             ->name('invoice-2023-04-10.pdf');
     }
 }
