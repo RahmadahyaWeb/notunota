@@ -31,8 +31,12 @@ class PreviewController extends Controller
             'status' => $invoice->status,
         ];
 
+        $filename = 'invoice-'.$invoice->invoice_number.'.pdf';
+
+        $template = $invoice->template ?? 'classic';
+
         return pdf()
-            ->view('pdf.classic', compact('data'))
-            ->name('invoice-2023-04-10.pdf');
+            ->view('pdf.'.$template, compact('data'))
+            ->name($filename);
     }
 }

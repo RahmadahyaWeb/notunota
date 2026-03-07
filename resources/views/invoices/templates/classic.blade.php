@@ -13,29 +13,26 @@
                     <div>Telp: {{ $data['business']->phone }}</div>
                 </div>
             </td>
-            <td style="vertical-align: top; text-align: right;">
+            <td style="vertical-align: top;">
                 <div
-                    style="font-size: 32px; font-weight: 300; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px;">
+                    style="text-align: right; font-size: 32px; font-weight: 300; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px;">
                     Invoice
                 </div>
                 <div style="margin-top: 10px;">
                     <table style="margin-left: auto; border-collapse: collapse;">
                         <tr>
-                            <td
-                                style="text-align: right; color: #94a3b8; padding: 2px 10px; font-size: 11px; text-transform: uppercase;">
+                            <td style="color: #94a3b8; padding: 2px 20px; text-transform: uppercase;">
                                 Nomor</td>
                             <td style="text-align: right; font-weight: bold; color: #1e293b;">
                                 #{{ $data['invoice_number'] }}</td>
                         </tr>
                         <tr>
-                            <td
-                                style="text-align: right; color: #94a3b8; padding: 2px 10px; font-size: 11px; text-transform: uppercase;">
+                            <td style="color: #94a3b8; padding: 2px 20px; text-transform: uppercase;">
                                 Tanggal</td>
                             <td style="text-align: right; color: #1e293b;">{{ $data['invoice_date'] }}</td>
                         </tr>
                         <tr>
-                            <td
-                                style="text-align: right; color: #94a3b8; padding: 2px 10px; font-size: 11px; text-transform: uppercase;">
+                            <td style="color: #94a3b8; padding: 2px 20px; text-transform: uppercase;">
                                 Jatuh Tempo</td>
                             <td style="text-align: right; color: #e11d48; font-weight: 600;">{{ $data['due_date'] }}
                             </td>

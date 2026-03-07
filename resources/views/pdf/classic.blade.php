@@ -12,152 +12,156 @@
 
 <body>
     <div
-        style="margin: 0 auto; padding: 20mm; font-family: Arial, sans-serif; font-size: 12px; color: #333; box-sizing: border-box; background: #fff;">
+        style="margin: 0 auto; padding: 40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 13px; color: #334155; box-sizing: border-box; background: #fff; line-height: 1.5;">
 
-        {{-- HEADER --}}
-        <div style="border-bottom: 1px solid #ccc; padding-bottom: 20px; margin-bottom: 20px;">
-            <table style="width: 100%;">
-                <tr>
-                    {{-- BUSINESS INFO --}}
-                    <td style="width: 50%; vertical-align: top;">
-                        <div style="font-size: 20px; font-weight: bold;">
-                            {{ $data['business']->name }}
-                        </div>
-                        <div style="margin-top: 5px; font-size: 12px; color: #555; line-height: 1.4;">
-                            <div>{{ $data['business']->address }}</div>
-                            <div>{{ $data['business']->phone }}</div>
-                        </div>
-                    </td>
+        {{-- HEADER SECTION --}}
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
+            <tr>
+                <td style="vertical-align: top;">
+                    <div style="font-size: 28px; font-weight: 800; color: #1e293b; letter-spacing: -0.5px;">
+                        {{ $data['business']->name }}
+                    </div>
+                    <div style="margin-top: 8px; color: #64748b; font-size: 12px; max-width: 250px;">
+                        <div style="margin-bottom: 2px;">{{ $data['business']->address }}</div>
+                        <div>Telp: {{ $data['business']->phone }}</div>
+                    </div>
+                </td>
+                <td style="vertical-align: top;">
+                    <div
+                        style="text-align: right; font-size: 32px; font-weight: 300; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px;">
+                        Invoice
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <table style="margin-left: auto; border-collapse: collapse;">
+                            <tr>
+                                <td style="color: #94a3b8; padding: 2px 20px; text-transform: uppercase;">
+                                    Nomor</td>
+                                <td style="text-align: right; font-weight: bold; color: #1e293b;">
+                                    #{{ $data['invoice_number'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #94a3b8; padding: 2px 20px; text-transform: uppercase;">
+                                    Tanggal</td>
+                                <td style="text-align: right; color: #1e293b;">{{ $data['invoice_date'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #94a3b8; padding: 2px 20px; text-transform: uppercase;">
+                                    Jatuh Tempo</td>
+                                <td style="text-align: right; color: #e11d48; font-weight: 600;">{{ $data['due_date'] }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
 
-                    {{-- INVOICE META --}}
-                    <td style="width: 50%; vertical-align: top; text-align: right;">
-                        <div style="font-size: 24px; font-weight: bold; text-transform: uppercase;">
-                            Invoice
-                        </div>
-                        <div style="margin-top: 15px; font-size: 12px;">
-                            <div style="margin-bottom: 5px;"><strong>No:</strong> {{ $data['invoice_number'] }}</div>
-                            <div style="margin-bottom: 5px;"><strong>Tanggal:</strong> {{ $data['invoice_date'] }}</div>
-                            <div><strong>Jatuh Tempo:</strong> {{ $data['due_date'] }}</div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        {{-- BILL TO --}}
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 40px; border-left: 4px solid #334155; padding-left: 15px;">
             <div
-                style="text-transform: uppercase; letter-spacing: 1px; color: #888; font-size: 10px; margin-bottom: 5px;">
-                Bill To
+                style="text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; font-size: 11px; font-weight: bold; margin-bottom: 4px;">
+                Ditujukan Kepada
             </div>
-            <div style="font-weight: bold;">
+            <div style="font-size: 16px; font-weight: bold; color: #1e293b;">
                 {{ $data['customer']->name ?? '-' }}
             </div>
         </div>
 
-        {{-- TABLE --}}
-        <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead style="background-color: #f9fafb; border-bottom: 2px solid #e5e7eb;">
-                    <tr>
-                        <th
-                            style="text-align: left; padding: 12px 8px; width: 60%; font-size: 12px; text-transform: uppercase; color: #4b5563;">
-                            Description</th>
-                        <th
-                            style="text-align: right; padding: 12px 8px; width: 10%; font-size: 12px; text-transform: uppercase; color: #4b5563;">
-                            Qty</th>
-                        <th
-                            style="text-align: right; padding: 12px 8px; width: 15%; font-size: 12px; text-transform: uppercase; color: #4b5563;">
-                            Price</th>
-                        <th
-                            style="text-align: right; padding: 12px 8px; width: 15%; font-size: 12px; text-transform: uppercase; color: #4b5563;">
-                            Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data['items'] as $index => $item)
-                        <tr>
-                            {{-- Menambahkan border-bottom pada setiap TD --}}
-                            {{-- Periksa apakah ini baris terakhir untuk estetika yang lebih baik --}}
-                            @php
-                                $isLast = $loop->last;
-                                $borderStyle = $isLast ? '' : 'border-bottom: 1px solid #eeeeee;';
-                            @endphp
-
-                            <td style="padding: 12px 8px; {{ $borderStyle }}">{{ $item['description'] }}</td>
-                            <td style="padding: 12px 8px; text-align: right; {{ $borderStyle }}">{{ $item['qty'] }}
-                            </td>
-                            <td style="padding: 12px 8px; text-align: right; {{ $borderStyle }}">Rp
-                                {{ number_format($item['price'], 0, ',', '.') }}</td>
-                            <td style="padding: 12px 8px; text-align: right; font-weight: bold; {{ $borderStyle }}">Rp
-                                {{ number_format($item['total'], 0, ',', '.') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        {{-- SUMMARY --}}
-        <div style="margin-top: 20px; width: 50%; margin-left: auto;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #555;">
-                <span>Subtotal</span>
-                <span>Rp {{ number_format($data['total'], 0, ',', '.') }}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #555;">
-                <span>Pajak</span>
-                <span>Rp 0</span>
-            </div>
-            <div
-                style="border-top: 1px solid #ccc; padding-top: 5px; display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
-                <span>Total</span>
-                <span>Rp {{ number_format($data['total'], 0, ',', '.') }}</span>
-            </div>
-        </div>
-
-        {{-- NOTES & PAYMENT --}}
-        <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px; font-size: 12px; color: #555;">
-            <table style="width: 100%; table-layout: fixed;">
-                <tr>
-                    {{-- TERMS --}}
-                    <td style="width: 50%; vertical-align: top; padding-right: 10px;">
-                        <div
-                            style="text-transform: uppercase; letter-spacing: 1px; font-size: 10px; color: #888; margin-bottom: 5px;">
-                            Terms & Conditions
-                        </div>
-                        <div>Pembayaran wajib dilakukan sebelum tanggal jatuh tempo yang tertera.</div>
-                    </td>
-
-                    {{-- PAYMENT INFO --}}
-                    <td style="width: 50%; vertical-align: top; padding-left: 10px;">
-                        <div
-                            style="text-transform: uppercase; letter-spacing: 1px; font-size: 10px; color: #888; margin-bottom: 5px;">
-                            Payment Information
-                        </div>
-                        <div style="line-height: 1.5;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>Bank</span>
-                                <span style="font-weight: bold;">BCA</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>No. Rekening</span>
-                                <span style="font-weight: bold;">1234567890</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>Atas Nama</span>
-                                <span style="font-weight: bold;">{{ $data['business']->name }}</span>
-                            </div>
-                        </div>
-                    </td>
+        {{-- ITEMS TABLE --}}
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+            <thead>
+                <tr style="background-color: #1e293b;">
+                    <th
+                        style="text-align: left; padding: 12px 15px; color: #ffffff; font-size: 11px; text-transform: uppercase; border-top-left-radius: 4px;">
+                        Deskripsi</th>
+                    <th
+                        style="text-align: center; padding: 12px 15px; color: #ffffff; font-size: 11px; text-transform: uppercase; width: 80px;">
+                        Qty</th>
+                    <th
+                        style="text-align: right; padding: 12px 15px; color: #ffffff; font-size: 11px; text-transform: uppercase; width: 120px;">
+                        Harga Satuan</th>
+                    <th
+                        style="text-align: right; padding: 12px 15px; color: #ffffff; font-size: 11px; text-transform: uppercase; width: 140px; border-top-right-radius: 4px;">
+                        Total Harga</th>
                 </tr>
-            </table>
+            </thead>
+            <tbody>
+                @foreach ($data['items'] as $item)
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 15px; vertical-align: top;">
+                            <div style="font-weight: 600; color: #334155;">{{ $item['description'] }}</div>
+                        </td>
+                        <td style="padding: 15px; text-align: center; vertical-align: top; color: #64748b;">
+                            {{ $item['qty'] }}</td>
+                        <td style="padding: 15px; text-align: right; vertical-align: top; color: #64748b;">
+                            {{ number_format($item['price'], 0, ',', '.') }}
+                        </td>
+                        <td
+                            style="padding: 15px; text-align: right; vertical-align: top; font-weight: bold; color: #1e293b;">
+                            {{ number_format($item['total'], 0, ',', '.') }}
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        {{-- SUMMARY SECTION --}}
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="width: 55%; vertical-align: top; padding-right: 40px;">
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 8px;">
+                        <div
+                            style="text-transform: uppercase; font-size: 10px; font-weight: bold; color: #94a3b8; margin-bottom: 8px;">
+                            Instruksi Pembayaran</div>
+                        <table style="width: 100%; font-size: 12px; color: #475569;">
+                            <tr>
+                                <td style="padding: 2px 0;">Bank</td>
+                                <td style="padding: 2px 0; font-weight: bold; text-align: right;">BCA</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 2px 0;">No. Rekening</td>
+                                <td style="padding: 2px 0; font-weight: bold; text-align: right;">1234 567 890</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 2px 0;">Atas Nama</td>
+                                <td style="padding: 2px 0; font-weight: bold; text-align: right;">
+                                    {{ $data['business']->name }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+                <td style="width: 45%; vertical-align: top;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px 0; color: #64748b;">Subtotal</td>
+                            <td style="padding: 8px 0; text-align: right; color: #1e293b;">Rp
+                                {{ number_format($data['total'], 0, ',', '.') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; color: #64748b;">Pajak (0%)</td>
+                            <td style="padding: 8px 0; text-align: right; color: #1e293b;">Rp 0</td>
+                        </tr>
+                        <tr style="border-top: 2px solid #1e293b;">
+                            <td style="padding: 15px 0; font-size: 16px; font-weight: bold; color: #1e293b;">GRAND TOTAL
+                            </td>
+                            <td
+                                style="padding: 15px 0; font-size: 18px; font-weight: 800; text-align: right; color: #1e293b;">
+                                Rp {{ number_format($data['total'], 0, ',', '.') }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        {{-- FOOTER --}}
+        <div style="margin-top: 60px; padding-top: 20px; border-top: 1px solid #f1f5f9; text-align: center;">
+            <div style="color: #64748b; font-size: 12px; margin-bottom: 4px;">Terima kasih atas kepercayaan Anda.</div>
+            <div style="color: #94a3b8; font-size: 10px; font-style: italic;">
+                Invoice ini diterbitkan secara elektronik dan sah tanpa memerlukan tanda tangan basah.
+            </div>
         </div>
 
-        <div style="margin-top: 40px; text-align: center; color: #999; font-size: 10px;">
-            Terima kasih atas kepercayaan Anda bertransaksi dengan {{ $data['business']->name }}.<br>
-            Invoice ini sah dihasilkan secara elektronik oleh sistem <strong>Notunota</strong>.
-        </div>
     </div>
-
 </body>
 
 </html>
