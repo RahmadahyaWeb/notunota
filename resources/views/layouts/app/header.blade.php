@@ -20,7 +20,7 @@
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
         @endauth
 
-        <a href="/" class="flex items-center gap-2 group">
+        <a href="/" class="hidden md:flex items-center gap-2 group mr-4">
 
             {{-- ICON --}}
             <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center text-sm font-bold">
