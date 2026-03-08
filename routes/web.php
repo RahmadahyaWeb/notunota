@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::livewire('/', 'pages::landing-page')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::livewire('dashboard', 'pages::dashboard')->name('dashboard');
 
     // INVOICES
     Route::livewire('invoice', 'pages::invoice.index')->name('invoice.index');
