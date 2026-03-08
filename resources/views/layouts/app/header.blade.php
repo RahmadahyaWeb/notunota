@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     @include('partials.head')
@@ -80,7 +80,9 @@
 
                         <flux:navmenu.separator />
 
-                        <flux:navmenu.item icon="cog-6-tooth" href="#">Pengaturan</flux:navmenu.item>
+                        <flux:navmenu.item icon="cog-6-tooth" href="{{ route('setting.index') }}">
+                            Pengaturan Toko
+                        </flux:navmenu.item>
                     </flux:navmenu>
                 </flux:dropdown>
             @endauth

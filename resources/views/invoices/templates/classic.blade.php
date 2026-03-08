@@ -8,14 +8,18 @@
                 <div style="font-size: 28px; font-weight: 800; color: #1e293b; letter-spacing: -0.5px;">
                     {{ $data['business']->name }}
                 </div>
-                <div style="margin-top: 8px; color: #64748b; font-size: 12px; max-width: 250px;">
-                    <div style="margin-bottom: 2px;">{{ $data['business']->address }}</div>
-                    <div>Telp: {{ $data['business']->phone }}</div>
+
+                <div style="margin-top: 8px; color: #64748b; font-size: 12px; max-width: 260px; line-height: 1.6;">
+                    <div>{{ $data['business']->address }}</div>
+
+                    <div style="margin-top:4px;">
+                        {{ $data['business']->phone }}
+                    </div>
                 </div>
             </td>
             <td style="vertical-align: top;">
                 <div
-                    style="text-align: right; font-size: 32px; font-weight: 300; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px;">
+                    style="text-align: right; font-size: 32px; font-weight: 300; color: #94a3b8; text-transform: uppercase;">
                     Invoice
                 </div>
                 <div style="margin-top: 10px;">
@@ -102,16 +106,18 @@
                     <table style="width: 100%; font-size: 12px; color: #475569;">
                         <tr>
                             <td style="padding: 2px 0;">Bank</td>
-                            <td style="padding: 2px 0; font-weight: bold; text-align: right;">BCA</td>
+                            <td style="padding: 2px 0; font-weight: bold; text-align: right;">
+                                {{ $data['business']->bank_name }}</td>
                         </tr>
                         <tr>
                             <td style="padding: 2px 0;">No. Rekening</td>
-                            <td style="padding: 2px 0; font-weight: bold; text-align: right;">1234 567 890</td>
+                            <td style="padding: 2px 0; font-weight: bold; text-align: right;">
+                                {{ $data['business']->bank_account_number }}</td>
                         </tr>
                         <tr>
                             <td style="padding: 2px 0;">Atas Nama</td>
                             <td style="padding: 2px 0; font-weight: bold; text-align: right;">
-                                {{ $data['business']->name }}</td>
+                                {{ $data['business']->bank_account_name }}</td>
                         </tr>
                     </table>
                 </div>

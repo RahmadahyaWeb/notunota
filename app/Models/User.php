@@ -66,4 +66,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(Business::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $user->business()->create([
+                'name' => $user->name.' Business',
+            ]);
+        });
+    }
 }

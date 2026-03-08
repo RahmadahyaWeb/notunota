@@ -18,6 +18,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // PRODUCT
     Route::livewire('product', 'pages::product.index')->name('product.index');
+
+    // SETTING
+    Route::livewire('setting', 'pages::setting.index')->name('setting.index');
 });
 
 Route::get('invoice/preview/{token}', PreviewController::class)->name('invoice.preview');

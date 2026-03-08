@@ -24,6 +24,11 @@ return new class extends Migration
             $table->string('wa_device_id')->nullable();
             $table->string('wa_status')->nullable();
 
+            // bank information
+            $table->string('bank_name')->nullable();
+            $table->string('bank_account_number')->nullable();
+            $table->string('bank_account_name')->nullable();
+
             $table->string('invoice_prefix')->default('INV');
             $table->unsignedInteger('invoice_number_padding')->default(4);
 
