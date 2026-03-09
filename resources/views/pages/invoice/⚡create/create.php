@@ -30,6 +30,17 @@ new class extends Component
 
     public $token;
 
+    // Customer fields
+    public $code;
+
+    public $name;
+
+    public $email;
+
+    public $phone;
+
+    public $address;
+
     public function mount($token = null)
     {
         $business = Auth::user()->business;
@@ -168,13 +179,13 @@ new class extends Component
 
         if ($this->invoice) {
 
-            $invoiceService->update($this->invoice, $payload);
+            $result = $invoiceService->update($this->invoice, $payload);
 
             $this->resetForm();
 
             $action = [
                 'text' => 'Lihat Invoice',
-                'route' => route('invoice.index'),
+                'route' => route('invoice.index', ['invoice_number' => $result->invoice_number]),
             ];
 
             $this->dispatch('notify',
@@ -186,13 +197,13 @@ new class extends Component
 
         } else {
 
-            $invoiceService->create($business, $payload);
+            $result = $invoiceService->create($business, $payload);
 
             $this->resetForm();
 
             $action = [
                 'text' => 'Lihat Invoice',
-                'route' => route('invoice.index'),
+                'route' => route('invoice.index', ['invoice_number' => $result->invoice_number]),
             ];
 
             $this->dispatch('notify',
@@ -203,6 +214,42 @@ new class extends Component
             );
 
         }
+    }
+
+    public function saveCustomer()
+    {
+        $this->validate([
+            'code' => 'required|string|max:50',
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string|max:30',
+            'address' => 'nullable|string',
+        ]);
+
+        $business = Auth::user()->business;
+
+        Customer::create(
+            [
+                'business_id' => $business->id,
+                'code' => $this->code,
+                'name' => $this->name,
+                'email' => $this->email,
+                'phone' => $this->phone,
+                'address' => $this->address,
+            ]
+        );
+
+        $this->resetForm();
+
+        $this->modal('add-customer')->close();
+
+        $this->dispatch('notify',
+            title: 'Berhasil',
+            message: 'Data pelanggan berhasil disimpan.',
+            type: 'success'
+        );
+
+        $this->customers = $business->customers()->get();
     }
 
     public function resetForm()
@@ -217,6 +264,16 @@ new class extends Component
         $this->invoice = null;
 
         $this->add_item();
+    }
+
+    public function resetFormAddCustomer()
+    {
+        $this->customer_id = null;
+        $this->code = '';
+        $this->name = '';
+        $this->email = '';
+        $this->phone = '';
+        $this->address = '';
     }
 
     #[Computed()]

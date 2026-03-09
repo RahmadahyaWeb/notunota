@@ -41,7 +41,8 @@
     <flux:card>
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div class="flex-1 max-w-sm">
-                <flux:input icon="magnifying-glass" placeholder="Cari nomor invoice atau pelanggan..." />
+                <flux:input type="search" icon="magnifying-glass" wire:model.live="invoice_number"
+                    placeholder="Cari nomor invoice atau pelanggan..." />
             </div>
 
             <div class="flex gap-2">

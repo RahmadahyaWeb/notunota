@@ -25,6 +25,9 @@ new class extends Component
     #[Url(history: true, except: '')]
     public $status = '';
 
+    #[Url(history: true, except: '')]
+    public $invoice_number = '';
+
     public function mount()
     {
         $this->businessId = Business::where('user_id', Auth::id())->first()->id;
@@ -83,6 +86,11 @@ new class extends Component
         $this->select_all = count($this->selected_invoices) === $this->invoices->count();
     }
 
+    public function updatedInvoiceNumber()
+    {
+        $this->resetPage();
+    }
+
     public function bulkUpdateStatus()
     {
         if (empty($this->selected_invoices) || ! $this->bulk_status) {
@@ -110,6 +118,9 @@ new class extends Component
         $invoices = Invoice::with(['customer', 'business', 'items'])
             ->when($this->status, function ($query) {
                 $query->where('status', $this->status);
+            })
+            ->when($this->invoice_number, function ($query) {
+                $query->where('invoice_number', 'like', "%{$this->invoice_number}%");
             })
             ->latest()
             ->paginate(10);

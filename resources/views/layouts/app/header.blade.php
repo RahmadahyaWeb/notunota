@@ -40,7 +40,10 @@
                 <flux:navbar.item icon="layout-grid" href="{{ route('dashboard') }}">Dashboard</flux:navbar.item>
 
                 <flux:dropdown>
-                    <flux:navbar.item icon="document-text" icon-trailing="chevron-down">Invoice</flux:navbar.item>
+                    <flux:navbar.item icon="document-text" icon-trailing="chevron-down"
+                        :current="request()->is('invoice*')">
+                        Invoice
+                    </flux:navbar.item>
 
                     <flux:navmenu>
                         <flux:navmenu.item icon="plus-circle" href="{{ route('invoice.create') }}">

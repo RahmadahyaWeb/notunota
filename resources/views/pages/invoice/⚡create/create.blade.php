@@ -17,9 +17,17 @@
 
             {{-- Informasi Customer --}}
             <div class="space-y-4">
-                <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-                    Informasi Pelanggan
-                </h3>
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                        Informasi Pelanggan
+                    </h3>
+
+                    <flux:modal.trigger name="add-customer">
+                        <flux:button size="sm">
+                            + Tambah Pelanggan
+                        </flux:button>
+                    </flux:modal.trigger>
+                </div>
 
                 <flux:select wire:model.change.live="customer_id" label="Pilih Pelanggan"
                     description="Pilih pelanggan yang akan menerima invoice ini.">
@@ -188,8 +196,8 @@
                     {{-- Slider Zoom yang Lebih Manis --}}
                     <div class="flex items-center gap-4 flex-1 sm:flex-none min-w-[160px]">
                         <span class="text-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
                             </svg>
@@ -231,6 +239,51 @@
 
         </div>
     </div>
+
+    <flux:modal name="add-customer" class="md:w-96" @close="resetFormAddCustomer()" :dismissible="false">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">
+                    Tambah Pelanggan
+                </flux:heading>
+
+                <flux:text class="mt-2">
+                    Isi formulir di bawah untuk menambahkan pelanggan baru.
+                </flux:text>
+            </div>
+
+            <form wire:submit="saveCustomer" class="space-y-6">
+                <flux:field>
+                    <flux:label>Kode Pelanggan</flux:label>
+                    <flux:input wire:model="code" placeholder="Masukkan kode pelanggan" required />
+                </flux:field>
+
+                <flux:field>
+                    <flux:label>Nama Pelanggan</flux:label>
+                    <flux:input wire:model="name" placeholder="Masukkan nama pelanggan" required />
+                </flux:field>
+
+                <flux:field>
+                    <flux:label>Email</flux:label>
+                    <flux:input wire:model="email" type="email" placeholder="Masukkan email pelanggan" />
+                </flux:field>
+
+                <flux:field>
+                    <flux:label>Telepon</flux:label>
+                    <flux:input wire:model="phone" placeholder="Masukkan nomor telepon pelanggan" />
+                </flux:field>
+
+                <flux:field>
+                    <flux:label>Alamat</flux:label>
+                    <flux:textarea wire:model="address" placeholder="Masukkan alamat pelanggan" />
+                </flux:field>
+
+                <div class="flex justify-end">
+                    <flux:button variant="primary" type="submit">Simpan</flux:button>
+                </div>
+            </form>
+        </div>
+    </flux:modal>
 
     @push('scripts')
         <script>
