@@ -23,6 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('setting', 'pages::setting.index')->name('setting.index');
 });
 
-Route::get('invoice/preview/{token}', PreviewController::class)->name('invoice.preview');
+// Route::get('invoice/preview/{token}', PreviewController::class)->name('invoice.preview');
+Route::livewire('invoice/preview/{token}', 'pages::invoice.preview')->name('invoice.preview');
 
 require __DIR__.'/settings.php';

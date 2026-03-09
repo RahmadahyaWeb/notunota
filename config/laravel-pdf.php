@@ -5,7 +5,7 @@ return [
      * The default driver to use for PDF generation.
      * Supported: "browsershot", "cloudflare", "dompdf", "gotenberg"
      */
-    'driver' => env('LARAVEL_PDF_DRIVER', 'cloudflare'),
+    'driver' => env('LARAVEL_PDF_DRIVER', 'dompdf'),
 
     /*
      * The job class used for queued PDF generation.
@@ -75,7 +75,7 @@ return [
          * Allow DOMPDF to fetch external resources (images, CSS).
          * Set to true if your HTML references remote URLs.
          */
-        'is_remote_enabled' => env('LARAVEL_PDF_DOMPDF_REMOTE_ENABLED', false),
+        'is_remote_enabled' => env('LARAVEL_PDF_DOMPDF_REMOTE_ENABLED', true),
 
         /*
          * The base path for local file access.

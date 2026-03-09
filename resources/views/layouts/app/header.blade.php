@@ -4,14 +4,7 @@
 <head>
     @include('partials.head')
 
-    <style>
-        .a4-page {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 20mm;
-            box-sizing: border-box;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800 antialiased">

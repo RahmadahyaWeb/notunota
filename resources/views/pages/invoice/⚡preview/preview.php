@@ -1,19 +1,31 @@
 <?php
 
 use App\Models\Invoice;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
-
-use function Spatie\LaravelPdf\Support\pdf;
 
 new class extends Component
 {
-    public function preview(Invoice $invoice)
-    {
-        $invoice = Invoice::with(['customer', 'business', 'items'])
-            ->where('id', $invoice->id)
-            ->first();
+    public $data = [];
 
-        $data = [
+    public $template = 'classic';
+
+    public function mount($token)
+    {
+        $invoice = Invoice::with(['customer', 'business', 'items.product'])
+            ->where('public_token', $token)
+            ->firstOrFail();
+
+        // Jika status draft, hanya pemilik yang boleh mengakses
+        if ($invoice->status === 'draft') {
+            if (! auth()->check() || Auth::user()->business->id !== $invoice->business->id) {
+                abort(403, 'Anda tidak memiliki akses ke invoice ini.');
+            }
+        }
+
+        $this->template = $invoice->template ?? 'classic';
+
+        $this->data = [
             'business' => $invoice->business,
             'customer' => $invoice->customer,
             'invoice_number' => $invoice->invoice_number,
@@ -22,11 +34,7 @@ new class extends Component
             'items' => $invoice->items,
             'subtotal' => $invoice->subtotal,
             'total' => $invoice->total,
-            'status' => 'draft',
+            'status' => $invoice->status,
         ];
-
-        return pdf()
-            ->view('invoices.templates.classic', compact('data'))
-            ->name('invoice-2023-04-10.pdf');
     }
 };
