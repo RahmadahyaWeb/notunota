@@ -23,6 +23,8 @@ new class extends Component
 
     public $wa_device_id;
 
+    public $use_notunota_token = '1';
+
     public function mount()
     {
         $business = Auth::user()->business;

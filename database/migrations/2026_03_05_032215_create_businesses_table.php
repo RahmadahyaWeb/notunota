@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('wa_token')->nullable();
             $table->string('wa_device_id')->nullable();
             $table->string('wa_status')->nullable();
+            $table->boolean('use_notunota_token')->default(true);
 
             // bank information
             $table->string('bank_name')->nullable();
