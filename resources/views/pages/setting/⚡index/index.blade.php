@@ -88,6 +88,26 @@
                 </div>
             </div>
 
+            {{-- ========================= --}}
+            {{-- PENGATURAN WHATSAPP --}}
+            {{-- ========================= --}}
+            <div class="space-y-4 border-t pt-6">
+                <div>
+                    <flux:heading size="lg">Integrasi WA</flux:heading>
+                    <flux:text class="mt-1 text-sm">
+                        WA akan digunakan untuk mengirim invoice ke pelanggan melalui WhatsApp. Pastikan nomor yang
+                        digunakan sudah terdaftar di WhatsApp.
+                    </flux:text>
+                </div>
+
+                <div class="max-w-xs">
+                    <flux:field>
+                        <flux:label>WA Device Token</flux:label>
+                        <flux:input wire:model="wa_device_id" placeholder="Contoh: abc123def456" />
+                    </flux:field>
+                </div>
+            </div>
+
             <div class="flex justify-end border-t pt-6">
                 <flux:button variant="primary" type="submit">
                     Simpan Pengaturan

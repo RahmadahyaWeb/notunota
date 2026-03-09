@@ -21,6 +21,8 @@ new class extends Component
 
     public $business_id;
 
+    public $wa_device_id;
+
     public function mount()
     {
         $business = Auth::user()->business;
@@ -34,6 +36,8 @@ new class extends Component
             $this->bank_name = $business->bank_name;
             $this->bank_account_number = $business->bank_account_number;
             $this->bank_account_name = $business->bank_account_name;
+
+            $this->wa_device_id = $business->wa_device_id;
 
             $this->invoice_prefix = $business->invoice_prefix;
         }
@@ -49,6 +53,7 @@ new class extends Component
             'bank_account_number' => 'nullable|string|max:100',
             'bank_account_name' => 'nullable|string|max:255',
             'invoice_prefix' => 'nullable|string|max:20',
+            'wa_device_id' => 'nullable|string|max:255',
         ]);
 
         Auth::user()->business()->updateOrCreate(
@@ -61,6 +66,7 @@ new class extends Component
                 'bank_account_number' => $this->bank_account_number,
                 'bank_account_name' => $this->bank_account_name,
                 'invoice_prefix' => $this->invoice_prefix,
+                'wa_device_id' => $this->wa_device_id,
             ]
         );
 

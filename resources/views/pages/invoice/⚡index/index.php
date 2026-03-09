@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\SendWhatsAppMessages;
 use App\Models\Business;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
@@ -108,6 +109,20 @@ new class extends Component
         $this->dispatch('notify',
             title: 'Berhasil',
             message: 'Status beberapa invoice berhasil diperbarui.',
+            type: 'success'
+        );
+    }
+
+    public function sendInvoice($id)
+    {
+        $invoiceIds = [$id];
+        $waDeviceId = Auth::user()->business->wa_device_id;
+
+        SendWhatsAppMessages::dispatch($invoiceIds, $waDeviceId);
+
+        $this->dispatch('notify',
+            title: 'Berhasil',
+            message: 'Invoice sedang dikirim melalui WhatsApp.',
             type: 'success'
         );
     }

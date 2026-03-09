@@ -151,6 +151,11 @@
                                         Edit
                                     </flux:menu.item>
                                     <flux:menu.separator />
+                                    <flux:menu.item icon="paper-airplane"
+                                        wire:click="sendInvoice({{ $invoice->id }})">
+                                        Kirim Invoice
+                                    </flux:menu.item>
+                                    <flux:menu.separator />
                                     <flux:menu.item variant="danger" icon="trash"
                                         wire:click="confirmDelete({{ $invoice->id }})">
                                         Hapus
