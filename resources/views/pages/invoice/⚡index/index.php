@@ -34,16 +34,13 @@ new class extends Component
     public function stats()
     {
         return [
-            'paid' => Invoice::where('business_id', $this->businessId)
-                ->where('status', 'paid')
+            'paid' => Invoice::where('status', 'paid')
                 ->sum('total'),
 
-            'pending' => Invoice::where('business_id', $this->businessId)
-                ->where('status', 'sent')
+            'pending' => Invoice::where('status', 'sent')
                 ->sum('total'),
 
-            'overdue' => Invoice::where('business_id', $this->businessId)
-                ->where('status', 'overdue')
+            'overdue' => Invoice::where('status', 'overdue')
                 ->sum('total'),
         ];
     }
@@ -111,7 +108,6 @@ new class extends Component
     public function invoices()
     {
         $invoices = Invoice::with(['customer', 'business', 'items'])
-            ->where('business_id', $this->businessId)
             ->when($this->status, function ($query) {
                 $query->where('status', $this->status);
             })

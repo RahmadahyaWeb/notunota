@@ -22,7 +22,7 @@
                     style="text-align: right; font-size: 32px; font-weight: 300; color: #94a3b8; text-transform: uppercase;">
                     Invoice
                 </div>
-                <div style="margin-top: 10px;">
+                <div style="margin-top: 8px;">
                     <table style="margin-left: auto; border-collapse: collapse;">
                         <tr>
                             <td style="color: #94a3b8; padding: 2px 20px; text-transform: uppercase;">
@@ -130,8 +130,8 @@
                             {{ number_format($data['total'], 0, ',', '.') }}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 8px 0; color: #64748b;">Pajak (0%)</td>
-                        <td style="padding: 8px 0; text-align: right; color: #1e293b;">Rp 0</td>
+                        {{-- <td style="padding: 8px 0; color: #64748b;">Pajak (0%)</td> --}}
+                        {{-- <td style="padding: 8px 0; text-align: right; color: #1e293b;">Rp 0</td> --}}
                     </tr>
                     <tr style="border-top: 2px solid #1e293b;">
                         <td style="padding: 15px 0; font-size: 16px; font-weight: bold; color: #1e293b;">GRAND TOTAL

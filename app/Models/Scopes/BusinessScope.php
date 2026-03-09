@@ -5,16 +5,18 @@ namespace App\Models\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Auth;
 
 class BusinessScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        if (auth()->check()) {
-            $builder->where(
-                $model->getTable().'.business_id',
-                auth()->user()->business_id
-            );
+        $user = Auth::user();
+
+        if (! $user) {
+            return; // jika belum login, skip scope
         }
+
+        $builder->where('business_id', $user->business->id);
     }
 }

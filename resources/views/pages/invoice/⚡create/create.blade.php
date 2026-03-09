@@ -26,7 +26,7 @@
                     <option value="">-- Pilih Pelanggan --</option>
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}">
-                            {{ $customer->name }}
+                            {{ $customer->code }} - {{ $customer->name }}
                         </option>
                     @endforeach
                 </flux:select>
@@ -42,9 +42,7 @@
                     description="Pilih tampilan invoice yang akan digunakan.">
 
                     <option value="classic">Classic</option>
-                    <option value="thermal">Thermal</option>
                     <option value="minimal">Minimal</option>
-                    <option value="ms-word">MS Word</option>
 
                 </flux:select>
             </div>
@@ -92,7 +90,7 @@
                                         <option value="">-- Pilih Produk --</option>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}">
-                                                {{ $product->name }}
+                                                {{ $product->code }} - {{ $product->name }}
                                             </option>
                                         @endforeach
                                     </flux:select>

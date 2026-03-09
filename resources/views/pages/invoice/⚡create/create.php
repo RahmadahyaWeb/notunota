@@ -170,23 +170,53 @@ new class extends Component
 
             $invoiceService->update($this->invoice, $payload);
 
+            $this->resetForm();
+
+            $action = [
+                'text' => 'Lihat Invoice',
+                'route' => route('invoice.index'),
+            ];
+
             $this->dispatch('notify',
                 title: 'Berhasil',
                 message: 'Invoice berhasil diperbarui.',
-                type: 'success'
+                type: 'success',
+                actionButton: $action
             );
 
         } else {
 
             $invoiceService->create($business, $payload);
 
+            $this->resetForm();
+
+            $action = [
+                'text' => 'Lihat Invoice',
+                'route' => route('invoice.index'),
+            ];
+
             $this->dispatch('notify',
                 title: 'Berhasil',
                 message: 'Invoice berhasil dibuat.',
-                type: 'success'
+                type: 'success',
+                actionButton: $action
             );
 
         }
+    }
+
+    public function resetForm()
+    {
+        $this->customer_id = null;
+        $this->invoice_date = now()->format('Y-m-d');
+        $this->due_date = now()->addDays(7)->format('Y-m-d');
+        $this->items = [];
+        $this->subtotal = 0;
+        $this->total = 0;
+        $this->template = 'classic';
+        $this->invoice = null;
+
+        $this->add_item();
     }
 
     #[Computed()]

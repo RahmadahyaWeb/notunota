@@ -5,7 +5,7 @@ return [
      * The default driver to use for PDF generation.
      * Supported: "browsershot", "cloudflare", "dompdf", "gotenberg"
      */
-    'driver' => env('LARAVEL_PDF_DRIVER', 'browsershot'),
+    'driver' => env('LARAVEL_PDF_DRIVER', 'cloudflare'),
 
     /*
      * The job class used for queued PDF generation.
