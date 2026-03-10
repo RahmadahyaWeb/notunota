@@ -12,13 +12,25 @@ new class extends Component
 
     public function mount($token)
     {
-        $invoice = Invoice::with(['customer', 'business', 'items.product'])
+        $invoice = Invoice::with([
+            'customer',
+            'business',
+            'items.product',
+        ])
             ->where('public_token', $token)
             ->firstOrFail();
 
-        // Jika status draft, hanya pemilik yang boleh mengakses
+        // Draft hanya boleh diakses oleh user yang memiliki akses ke business
         if ($invoice->status === 'draft') {
-            if (! auth()->check() || Auth::user()->business->id !== $invoice->business->id) {
+
+            $user = Auth::user();
+
+            $allowed = $user &&
+                $user->businesses()
+                    ->where('business_id', $invoice->business_id)
+                    ->exists();
+
+            if (! $allowed) {
                 abort(403, 'Anda tidak memiliki akses ke invoice ini.');
             }
         }

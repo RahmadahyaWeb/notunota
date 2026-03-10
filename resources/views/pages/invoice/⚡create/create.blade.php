@@ -77,7 +77,7 @@
                         Daftar Produk / Layanan
                     </h3>
 
-                    <flux:button wire:click="add_item" size="sm">
+                    <flux:button wire:click="addItem" size="sm">
                         + Tambah Item
                     </flux:button>
                 </div>
@@ -115,7 +115,7 @@
                                 </div>
 
                                 <div class="md:col-span-1 flex items-end">
-                                    <flux:button wire:click="remove_item({{ $index }})" variant="danger"
+                                    <flux:button wire:click="removeItem({{ $index }})" variant="danger"
                                         class="w-full">
                                         ✕
                                     </flux:button>

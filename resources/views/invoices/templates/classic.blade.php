@@ -9,7 +9,7 @@
                     {{ $data['business']->name }}
                 </div>
 
-                <div style="margin-top: 8px; color: #64748b; font-size: 12px; max-width: 260px; line-height: 1.6;">
+                <div style="margin-top: 8px; color: #64748b; font-size: 12px; line-height: 1.6;">
                     <div>{{ $data['business']->address }}</div>
 
                     <div style="margin-top:4px;">

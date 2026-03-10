@@ -1,9 +1,7 @@
 <?php
 
-use App\Jobs\SendWhatsAppMessages;
-use App\Models\Business;
 use App\Models\Invoice;
-use Illuminate\Support\Facades\Auth;
+use App\Services\InvoiceService;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -12,8 +10,6 @@ use Livewire\WithPagination;
 new class extends Component
 {
     use WithPagination;
-
-    public $businessId;
 
     public $delete_id;
 
@@ -29,23 +25,15 @@ new class extends Component
     #[Url(history: true, except: '')]
     public $invoice_number = '';
 
-    public function mount()
-    {
-        $this->businessId = Business::where('user_id', Auth::id())->first()->id;
-    }
-
-    #[Computed()]
+    #[Computed]
     public function stats()
     {
         return [
-            'paid' => Invoice::where('status', 'paid')
-                ->sum('total'),
+            'paid' => Invoice::where('status', 'paid')->sum('total'),
 
-            'pending' => Invoice::where('status', 'sent')
-                ->sum('total'),
+            'pending' => Invoice::where('status', 'sent')->sum('total'),
 
-            'overdue' => Invoice::where('status', 'overdue')
-                ->sum('total'),
+            'overdue' => Invoice::where('status', 'overdue')->sum('total'),
         ];
     }
 
@@ -56,11 +44,9 @@ new class extends Component
         $this->modal('delete-invoice')->show();
     }
 
-    public function delete()
+    public function delete(InvoiceService $service)
     {
-        Invoice::where('id', $this->delete_id)
-            ->where('business_id', $this->businessId)
-            ->delete();
+        $service->delete($this->delete_id);
 
         $this->reset('delete_id');
 
@@ -92,17 +78,16 @@ new class extends Component
         $this->resetPage();
     }
 
-    public function bulkUpdateStatus()
+    public function bulkUpdateStatus(InvoiceService $service)
     {
         if (empty($this->selected_invoices) || ! $this->bulk_status) {
             return;
         }
 
-        Invoice::whereIn('id', $this->selected_invoices)
-            ->where('business_id', $this->businessId)
-            ->update([
-                'status' => $this->bulk_status,
-            ]);
+        $service->bulkUpdateStatus(
+            $this->selected_invoices,
+            $this->bulk_status
+        );
 
         $this->reset('selected_invoices', 'bulk_status', 'select_all');
 
@@ -115,31 +100,42 @@ new class extends Component
 
     public function sendInvoice($id)
     {
-        $invoiceIds = [$id];
-        $waDeviceId = Auth::user()->business->wa_device_id;
+        $invoice = Invoice::with(['customer', 'business'])
+            ->findOrFail($id);
 
-        SendWhatsAppMessages::dispatch($invoiceIds, $waDeviceId);
+        $customer = $invoice->customer;
 
-        $this->dispatch('notify',
-            title: 'Berhasil',
-            message: 'Invoice sedang dikirim melalui WhatsApp.',
-            type: 'success'
-        );
+        $invoice_link = route('invoice.preview', $invoice->public_token);
+
+        $message = "Halo {$customer->name}\n\n"
+            ."Terima kasih sudah berbelanja di {$invoice->business->name}.\n"
+            ."Berikut invoice transaksi Anda:\n\n"
+            ."{$invoice->invoice_number}\n"
+            ."{$invoice_link}\n\n"
+            ."Silakan dibuka untuk melihat detail dan pembayaran.\n"
+            .'Terima kasih.';
+
+        $encoded_message = urlencode($message);
+
+        $phone = preg_replace('/[^0-9]/', '', $customer->phone);
+
+        if (substr($phone, 0, 1) == '0') {
+            $phone = '62'.substr($phone, 1);
+        }
+
+        $wa_link = "https://wa.me/{$phone}?text={$encoded_message}";
+
+        return redirect()->away($wa_link);
     }
 
-    #[Computed()]
+    #[Computed]
     public function invoices()
     {
-        $invoices = Invoice::with(['customer', 'business', 'items'])
-            ->when($this->status, function ($query) {
-                $query->where('status', $this->status);
-            })
-            ->when($this->invoice_number, function ($query) {
-                $query->where('invoice_number', 'like', "%{$this->invoice_number}%");
-            })
+        return Invoice::with(['customer', 'business', 'items'])
+            ->when($this->status, fn ($q) => $q->where('status', $this->status))
+            ->when($this->invoice_number, fn ($q) => $q->where('invoice_number', 'like', "%{$this->invoice_number}%")
+            )
             ->latest()
             ->paginate(10);
-
-        return $invoices;
     }
 };

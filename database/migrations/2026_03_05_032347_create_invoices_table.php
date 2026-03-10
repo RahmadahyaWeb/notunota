@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('invoices', function (Blueprint $table) {
+
             $table->id();
-            $table->foreignId('business_id')->constrained()->cascadeOnDelete();
+
+            $table->foreignId('business_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->foreignId('customer_id')
                 ->nullable()
@@ -21,25 +25,38 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->string('invoice_number');
+
             $table->string('public_token', 60)->unique();
 
-            $table->enum('status', ['draft', 'sent', 'paid', 'overdue'])->default('draft');
+            $table->enum('status', [
+                'draft',
+                'sent',
+                'paid',
+                'overdue',
+                'cancelled',
+            ])->default('draft');
 
             $table->date('invoice_date');
             $table->date('due_date')->nullable();
 
             $table->decimal('subtotal', 15, 2)->default(0);
+            $table->decimal('discount', 15, 2)->default(0);
+            $table->decimal('tax', 15, 2)->default(0);
             $table->decimal('total', 15, 2)->default(0);
+
+            $table->text('notes')->nullable();
 
             $table->boolean('is_public')->default(true);
             $table->timestamp('public_expires_at')->nullable();
 
-            $table->unsignedInteger('view_count')->default(0);
+            $table->integer('view_count')->default(0);
             $table->timestamp('last_viewed_at')->nullable();
+
+            $table->string('template')->nullable();
 
             $table->timestamps();
 
-            $table->index(['business_id', 'status']);
+            $table->unique(['business_id', 'invoice_number']);
         });
     }
 

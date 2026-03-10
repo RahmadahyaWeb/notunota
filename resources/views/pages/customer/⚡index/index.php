@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Customer;
-use Illuminate\Support\Facades\Auth;
+use App\Services\CustomerService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -9,8 +9,6 @@ use Livewire\WithPagination;
 new class extends Component
 {
     use WithPagination;
-
-    public $businessId;
 
     public $customer_id;
 
@@ -26,11 +24,6 @@ new class extends Component
 
     public $address;
 
-    public function mount()
-    {
-        $this->businessId = Auth::user()->business->id;
-    }
-
     protected function rules()
     {
         return [
@@ -42,23 +35,18 @@ new class extends Component
         ];
     }
 
-    public function save()
+    public function save(CustomerService $service)
     {
         $this->validate();
 
-        Customer::updateOrCreate(
-            [
-                'id' => $this->customer_id,
-                'business_id' => $this->businessId,
-            ],
-            [
-                'code' => $this->code,
-                'name' => $this->name,
-                'email' => $this->email,
-                'phone' => $this->phone,
-                'address' => $this->address,
-            ]
-        );
+        $service->save([
+            'id' => $this->customer_id,
+            'code' => $this->code,
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'address' => $this->address,
+        ]);
 
         $this->resetForm();
 
@@ -92,11 +80,9 @@ new class extends Component
         $this->modal('delete-customer')->show();
     }
 
-    public function delete()
+    public function delete(CustomerService $service)
     {
-        Customer::where('id', $this->delete_id)
-            ->where('business_id', $this->businessId)
-            ->delete();
+        $service->delete($this->delete_id);
 
         $this->reset('delete_id');
 
@@ -121,20 +107,19 @@ new class extends Component
         ]);
     }
 
-    #[Computed()]
+    #[Computed]
     public function customers()
     {
-        return Auth::user()->business
-            ->customers()
+        return Customer::query()
             ->latest()
             ->paginate(10);
     }
 
-    #[Computed()]
+    #[Computed]
     public function stats()
     {
         return [
-            'total' => Customer::where('business_id', $this->businessId)->count(),
+            'total' => Customer::count(),
         ];
     }
 };

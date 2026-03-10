@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use App\Models\Scopes\BusinessScope;
+use App\Models\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+    use BelongsToBusiness;
+
     protected $guarded = [];
 
     public function business()
@@ -22,10 +24,5 @@ class Invoice extends Model
     public function items()
     {
         return $this->hasMany(InvoiceItem::class);
-    }
-
-    protected static function booted()
-    {
-        static::addGlobalScope(new BusinessScope);
     }
 }

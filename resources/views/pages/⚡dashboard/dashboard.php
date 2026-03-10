@@ -32,21 +32,6 @@ new class extends Component
         $this->total_invoice = Invoice::count();
 
         $this->paid_invoice = Invoice::where('status', 'paid')->count();
-
-        $this->unpaid_invoice = Invoice::where('status', 'unpaid')->count();
-
-        $this->revenue_month = Invoice::where('status', 'paid')
-            ->whereMonth('paid_at', now()->month)
-            ->sum('total');
-
-        $this->recent_invoices = Invoice::latest()
-            ->limit(5)
-            ->get();
-
-        $this->due_invoices = Invoice::where('status', 'unpaid')
-            ->orderBy('due_date')
-            ->limit(5)
-            ->get();
     }
 
     public function set_greeting()

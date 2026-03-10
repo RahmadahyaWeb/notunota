@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
+use App\Services\ProductService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -9,8 +9,6 @@ use Livewire\WithPagination;
 new class extends Component
 {
     use WithPagination;
-
-    public $businessId;
 
     public $product_id;
 
@@ -22,11 +20,6 @@ new class extends Component
 
     public $price;
 
-    public function mount()
-    {
-        $this->businessId = Auth::user()->business->id;
-    }
-
     protected function rules()
     {
         return [
@@ -36,21 +29,16 @@ new class extends Component
         ];
     }
 
-    public function save()
+    public function save(ProductService $service)
     {
         $this->validate();
 
-        Product::updateOrCreate(
-            [
-                'id' => $this->product_id,
-                'business_id' => $this->businessId,
-            ],
-            [
-                'code' => $this->code,
-                'name' => $this->name,
-                'price' => $this->price,
-            ]
-        );
+        $service->save([
+            'id' => $this->product_id,
+            'code' => $this->code,
+            'name' => $this->name,
+            'price' => $this->price,
+        ]);
 
         $this->resetForm();
 
@@ -78,14 +66,13 @@ new class extends Component
     public function confirmDelete($id)
     {
         $this->delete_id = $id;
+
         $this->modal('delete-product')->show();
     }
 
-    public function delete()
+    public function delete(ProductService $service)
     {
-        Product::where('id', $this->delete_id)
-            ->where('business_id', $this->businessId)
-            ->delete();
+        $service->delete($this->delete_id);
 
         $this->reset('delete_id');
 
@@ -108,20 +95,19 @@ new class extends Component
         ]);
     }
 
-    #[Computed()]
+    #[Computed]
     public function products()
     {
-        return Auth::user()->business
-            ->products()
+        return Product::query()
             ->latest()
             ->paginate(10);
     }
 
-    #[Computed()]
+    #[Computed]
     public function stats()
     {
         return [
-            'total' => Product::where('business_id', $this->businessId)->count(),
+            'total' => Product::count(),
         ];
     }
 };

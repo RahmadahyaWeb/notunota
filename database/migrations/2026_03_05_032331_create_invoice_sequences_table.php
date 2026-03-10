@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('invoice_sequences', function (Blueprint $table) {
+
             $table->id();
-            $table->foreignId('business_id')->constrained()->cascadeOnDelete();
+
+            $table->foreignId('business_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
             $table->year('year');
-            $table->unsignedInteger('last_number')->default(0);
+
+            $table->unsignedInteger('last_number')
+                ->default(0);
+
             $table->timestamps();
 
             $table->unique(['business_id', 'year']);

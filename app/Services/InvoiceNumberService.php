@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class InvoiceNumberService
 {
-    public function generate(Business $business): string
+    public function generate(Business $business)
     {
         return DB::transaction(function () use ($business) {
 
@@ -25,24 +25,20 @@ class InvoiceNumberService
                     'year' => $year,
                     'last_number' => 0,
                 ]);
-
-                $sequence = InvoiceSequence::where('id', $sequence->id)
-                    ->lockForUpdate()
-                    ->first();
             }
 
             $sequence->increment('last_number');
 
-            $running_number = str_pad(
+            $number = str_pad(
                 $sequence->last_number,
-                $business->invoice_number_padding ?? 4,
+                $business->invoice_number_padding,
                 '0',
                 STR_PAD_LEFT
             );
 
-            $prefix = $business->invoice_prefix ?? 'INV';
-
-            return "{$prefix}/{$year}/{$running_number}";
+            return $business->invoice_prefix
+                .'-'.$year
+                .'-'.$number;
         });
     }
 }

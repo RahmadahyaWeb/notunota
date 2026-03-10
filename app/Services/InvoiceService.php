@@ -2,132 +2,95 @@
 
 namespace App\Services;
 
-use App\Models\Business;
 use App\Models\Invoice;
-use App\Models\InvoiceItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class InvoiceService
 {
-    protected InvoiceNumberService $invoiceNumberService;
+    protected InvoiceNumberService $numberService;
 
-    public function __construct(InvoiceNumberService $invoiceNumberService)
+    public function __construct(InvoiceNumberService $numberService)
     {
-        $this->invoiceNumberService = $invoiceNumberService;
+        $this->numberService = $numberService;
     }
 
-    public function create(Business $business, array $payload): Invoice
+    public function create($business, array $data)
     {
-        return DB::transaction(function () use ($business, $payload) {
+        return DB::transaction(function () use ($business, $data) {
 
-            // 1️⃣ Generate invoice number
-            $invoice_number = $this->invoiceNumberService->generate($business);
-
-            // 2️⃣ Generate secure public token
-            $public_token = Str::random(40);
-
-            // 3️⃣ Hitung ulang subtotal & total
-            $subtotal = 0;
-
-            foreach ($payload['items'] as $item) {
-
-                $qty = (float) $item['qty'];
-                $price = (float) $item['price'];
-
-                $line_total = $qty * $price;
-
-                $subtotal += $line_total;
-            }
-
-            $total = $subtotal; // nanti bisa ditambah tax/discount
-
-            // 4️⃣ Create invoice
             $invoice = Invoice::create([
                 'business_id' => $business->id,
-                'customer_id' => $payload['customer_id'],
-                'invoice_number' => $invoice_number,
-                'public_token' => $public_token,
+                'customer_id' => $data['customer_id'],
+                'invoice_number' => $this->numberService->generate($business),
+                'invoice_date' => $data['invoice_date'],
+                'due_date' => $data['due_date'],
+                'template' => $data['template'],
                 'status' => 'draft',
-                'invoice_date' => $payload['invoice_date'],
-                'due_date' => $payload['due_date'] ?? null,
-                'subtotal' => $subtotal,
-                'total' => $total,
-                'is_public' => true,
-                'template' => $payload['template'] ?? 'classic',
+                'public_token' => Str::uuid(),
             ]);
 
-            // 5️⃣ Save invoice items snapshot
-            foreach ($payload['items'] as $item) {
+            foreach ($data['items'] as $item) {
 
-                $qty = (float) $item['qty'];
-                $price = (float) $item['price'];
-                $line_total = $qty * $price;
-
-                InvoiceItem::create([
-                    'invoice_id' => $invoice->id,
-                    'product_id' => $item['product_id'] ?? null,
+                $invoice->items()->create([
+                    'product_id' => $item['product_id'],
+                    'name' => $item['name'],
                     'description' => $item['description'],
-                    'qty' => $qty,
-                    'price' => $price,
-                    'total' => $line_total,
+                    'qty' => $item['qty'],
+                    'price' => $item['price'],
+                    'total' => $item['qty'] * $item['price'],
                 ]);
             }
 
-            return $invoice->load('items', 'customer');
+            return $invoice;
         });
     }
 
-    public function update(Invoice $invoice, array $payload): Invoice
+    public function update(Invoice $invoice, array $data)
     {
-        return DB::transaction(function () use ($invoice, $payload) {
+        return DB::transaction(function () use ($invoice, $data) {
 
-            // 1️⃣ Hitung ulang subtotal
-            $subtotal = 0;
-
-            foreach ($payload['items'] as $item) {
-
-                $qty = (float) $item['qty'];
-                $price = (float) $item['price'];
-
-                $line_total = $qty * $price;
-
-                $subtotal += $line_total;
-            }
-
-            $total = $subtotal;
-
-            // 2️⃣ Update invoice
             $invoice->update([
-                'customer_id' => $payload['customer_id'],
-                'invoice_date' => $payload['invoice_date'],
-                'due_date' => $payload['due_date'] ?? null,
-                'subtotal' => $subtotal,
-                'total' => $total,
-                'template' => $payload['template'] ?? $invoice->template,
+                'customer_id' => $data['customer_id'],
+                'invoice_date' => $data['invoice_date'],
+                'due_date' => $data['due_date'],
+                'template' => $data['template'],
             ]);
 
-            // 3️⃣ Hapus item lama
             $invoice->items()->delete();
 
-            // 4️⃣ Insert ulang item
-            foreach ($payload['items'] as $item) {
+            foreach ($data['items'] as $item) {
 
-                $qty = (float) $item['qty'];
-                $price = (float) $item['price'];
-                $line_total = $qty * $price;
-
-                InvoiceItem::create([
-                    'invoice_id' => $invoice->id,
-                    'product_id' => $item['product_id'] ?? null,
+                $invoice->items()->create([
+                    'product_id' => $item['product_id'],
+                    'name' => $item['name'],
                     'description' => $item['description'],
-                    'qty' => $qty,
-                    'price' => $price,
-                    'total' => $line_total,
+                    'qty' => $item['qty'],
+                    'price' => $item['price'],
+                    'total' => $item['qty'] * $item['price'],
                 ]);
             }
 
-            return $invoice->load('items', 'customer');
+            return $invoice;
         });
+    }
+
+    protected function generateNumber($business)
+    {
+        $count = $business->invoices()->count() + 1;
+
+        return 'INV-'.str_pad($count, 5, '0', STR_PAD_LEFT);
+    }
+
+    public function delete(int $id): void
+    {
+        Invoice::where('id', $id)->delete();
+    }
+
+    public function bulkUpdateStatus(array $ids, string $status): void
+    {
+        Invoice::whereIn('id', $ids)->update([
+            'status' => $status,
+        ]);
     }
 }

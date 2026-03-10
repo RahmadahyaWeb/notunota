@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Customer;
+use App\Services\CustomerService;
 use App\Services\InvoiceService;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -14,11 +14,11 @@ new class extends Component
 
     public $due_date;
 
+    public $items = [];
+
     public $products = [];
 
     public $customers = [];
-
-    public $items = [];
 
     public $subtotal = 0;
 
@@ -28,9 +28,7 @@ new class extends Component
 
     public $invoice;
 
-    public $token;
-
-    // Customer fields
+    // customer form
     public $code;
 
     public $name;
@@ -43,17 +41,18 @@ new class extends Component
 
     public function mount($token = null)
     {
-        $business = Auth::user()->business;
+        $business = tenant();
 
         $this->customers = $business->customers()->get();
-        $this->products = $business->products()->where('is_active', true)->get();
+        $this->products = $business->products()
+            ->where('is_active', true)
+            ->get();
 
         if ($token) {
 
             $invoice = $business->invoices()
                 ->with('items')
                 ->where('public_token', $token)
-                ->where('business_id', $business->id)
                 ->firstOrFail();
 
             $this->invoice = $invoice;
@@ -63,31 +62,30 @@ new class extends Component
             $this->due_date = $invoice->due_date;
             $this->template = $invoice->template;
 
-            $this->items = $invoice->items->map(function ($item) {
-                return [
-                    'product_id' => $item->product_id,
-                    'description' => $item->description,
-                    'qty' => $item->qty,
-                    'price' => $item->price,
-                    'total' => $item->total,
-                ];
-            })->toArray();
+            $this->items = $invoice->items->map(fn ($item) => [
+                'product_id' => $item->product_id,
+                'description' => $item->description,
+                'qty' => $item->qty,
+                'price' => $item->price,
+                'total' => $item->total,
+            ])->toArray();
 
-            $this->calculate_totals();
+            $this->calculateTotals();
 
         } else {
 
             $this->invoice_date = now()->format('Y-m-d');
             $this->due_date = now()->addDays(7)->format('Y-m-d');
 
-            $this->add_item();
+            $this->addItem();
         }
     }
 
-    public function add_item()
+    public function addItem()
     {
         $this->items[] = [
             'product_id' => null,
+            'name' => null,
             'description' => '',
             'qty' => 1,
             'price' => 0,
@@ -95,16 +93,17 @@ new class extends Component
         ];
     }
 
-    public function remove_item($index)
+    public function removeItem($index)
     {
         unset($this->items[$index]);
         $this->items = array_values($this->items);
-        $this->calculate_totals();
+
+        $this->calculateTotals();
     }
 
     public function updatedItems()
     {
-        $this->calculate_totals();
+        $this->calculateTotals();
     }
 
     public function updated($property, $value)
@@ -132,42 +131,39 @@ new class extends Component
 
         $item = $this->items[$index];
 
-        $item['description'] = $product->code;
+        $item['name'] = $product->name;
+        $item['description'] = $product->code.' - '.$product->name;
         $item['price'] = $product->price;
 
         $this->items[$index] = $item;
 
-        $this->calculate_totals();
+        $this->calculateTotals();
     }
 
-    public function calculate_totals()
+    public function calculateTotals()
     {
         $subtotal = 0;
 
-        foreach ($this->items as $index => $item) {
-            $qty = (float) $item['qty'];
-            $price = (float) $item['price'];
+        foreach ($this->items as $i => $item) {
 
-            $line_total = $qty * $price;
+            $line = (int) ($item['qty'] ?? 0) * (int) ($item['price'] ?? 0);
 
-            $this->items[$index]['total'] = $line_total;
+            $this->items[$i]['total'] = $line;
 
-            $subtotal += $line_total;
+            $subtotal += $line;
         }
 
         $this->subtotal = $subtotal;
         $this->total = $subtotal;
     }
 
-    public function save(InvoiceService $invoiceService)
+    public function save(InvoiceService $service)
     {
         $this->validate([
-            'customer_id' => 'required|exists:customers,id',
+            'customer_id' => 'required',
             'invoice_date' => 'required|date',
             'items' => 'required|array|min:1',
         ]);
-
-        $business = Auth::user()->business;
 
         $payload = [
             'customer_id' => $this->customer_id,
@@ -179,44 +175,33 @@ new class extends Component
 
         if ($this->invoice) {
 
-            $result = $invoiceService->update($this->invoice, $payload);
-
-            $this->resetForm();
-
-            $action = [
-                'text' => 'Lihat Invoice',
-                'route' => route('invoice.index', ['invoice_number' => $result->invoice_number]),
-            ];
-
-            $this->dispatch('notify',
-                title: 'Berhasil',
-                message: 'Invoice berhasil diperbarui.',
-                type: 'success',
-                actionButton: $action
-            );
+            $invoice = $service->update($this->invoice, $payload);
 
         } else {
 
-            $result = $invoiceService->create($business, $payload);
-
-            $this->resetForm();
-
-            $action = [
-                'text' => 'Lihat Invoice',
-                'route' => route('invoice.index', ['invoice_number' => $result->invoice_number]),
-            ];
-
-            $this->dispatch('notify',
-                title: 'Berhasil',
-                message: 'Invoice berhasil dibuat.',
-                type: 'success',
-                actionButton: $action
-            );
-
+            $invoice = $service->create(tenant(), $payload);
         }
+
+        $this->resetForm();
+
+        $this->dispatch('notify',
+            title: 'Berhasil',
+            message: 'Invoice berhasil disimpan.',
+            type: 'success'
+        );
     }
 
-    public function saveCustomer()
+    public function resetForm()
+    {
+        $this->customer_id = null;
+        $this->items = [];
+        $this->subtotal = 0;
+        $this->total = 0;
+
+        $this->addItem();
+    }
+
+    public function saveCustomer(CustomerService $service)
     {
         $this->validate([
             'code' => 'required|string|max:50',
@@ -226,66 +211,46 @@ new class extends Component
             'address' => 'nullable|string',
         ]);
 
-        $business = Auth::user()->business;
+        $customer = $service->save([
+            'code' => $this->code,
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'address' => $this->address,
+        ]);
 
-        Customer::create(
-            [
-                'business_id' => $business->id,
-                'code' => $this->code,
-                'name' => $this->name,
-                'email' => $this->email,
-                'phone' => $this->phone,
-                'address' => $this->address,
-            ]
-        );
+        $this->customers = tenant()->customers()->get();
 
-        $this->resetForm();
+        $this->customer_id = $customer->id;
+
+        $this->resetFormAddCustomer();
 
         $this->modal('add-customer')->close();
 
         $this->dispatch('notify',
             title: 'Berhasil',
-            message: 'Data pelanggan berhasil disimpan.',
+            message: 'Customer berhasil ditambahkan.',
             type: 'success'
         );
-
-        $this->customers = $business->customers()->get();
-    }
-
-    public function resetForm()
-    {
-        $this->customer_id = null;
-        $this->invoice_date = now()->format('Y-m-d');
-        $this->due_date = now()->addDays(7)->format('Y-m-d');
-        $this->items = [];
-        $this->subtotal = 0;
-        $this->total = 0;
-        $this->template = 'classic';
-        $this->invoice = null;
-
-        $this->add_item();
     }
 
     public function resetFormAddCustomer()
     {
-        $this->customer_id = null;
-        $this->code = '';
-        $this->name = '';
-        $this->email = '';
-        $this->phone = '';
-        $this->address = '';
+        $this->code = null;
+        $this->name = null;
+        $this->email = null;
+        $this->phone = null;
+        $this->address = null;
     }
 
-    #[Computed()]
+    #[Computed]
     public function previewData()
     {
-        $customer = $this->customer_id
-            ? Customer::find($this->customer_id)
-            : null;
-
         return [
-            'business' => Auth::user()->business,
-            'customer' => $customer,
+            'business' => tenant(),
+            'customer' => $this->customer_id
+                ? Customer::find($this->customer_id)
+                : null,
             'invoice_number' => 'DRAFT',
             'invoice_date' => $this->invoice_date,
             'due_date' => $this->due_date,

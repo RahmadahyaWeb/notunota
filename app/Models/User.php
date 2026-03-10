@@ -70,9 +70,22 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::created(function ($user) {
-            $user->business()->create([
+
+            $business = \App\Models\Business::create([
                 'name' => $user->name.' Business',
             ]);
+
+            $user->businesses()->attach($business->id, [
+                'role' => 'owner',
+            ]);
         });
+    }
+
+    public function businesses()
+    {
+        return $this->belongsToMany(
+            Business::class,
+            'business_users'
+        )->withPivot('role');
     }
 }
