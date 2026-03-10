@@ -25,4 +25,14 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceItem::class);
     }
+
+    public function recalculate_total()
+    {
+        $subtotal = $this->items()->sum('total');
+
+        $this->update([
+            'subtotal' => $subtotal,
+            'total' => $subtotal - $this->discount + $this->tax,
+        ]);
+    }
 }

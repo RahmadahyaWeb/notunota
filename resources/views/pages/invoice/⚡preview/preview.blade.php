@@ -139,7 +139,17 @@
                 <flux:button variant="primary" icon="paper-airplane" class="w-full">Kirim Invoice</flux:button>
             @endif
 
+            <flux:button icon="document-duplicate" variant="primary" class="w-full" onclick="copyInvoiceLink()">
+                Bagikan Invoice
+            </flux:button>
+
+            <p id="shareMsg" class="text-green-600 text-xs text-center hidden">
+                Link invoice berhasil disalin
+            </p>
+
         </div>
+
+
     </div>
 
     @push('scripts')
@@ -195,6 +205,21 @@
                         });
                     }
                 }
+            }
+        </script>
+
+        <script>
+            function copyInvoiceLink() {
+                const link = "{{ route('invoice.preview', $data['public_token'] ?? 'preview') }}";
+
+                navigator.clipboard.writeText(link).then(() => {
+                    const msg = document.getElementById('shareMsg');
+                    msg.classList.remove('hidden');
+
+                    setTimeout(() => {
+                        msg.classList.add('hidden');
+                    }, 2000);
+                });
             }
         </script>
     @endpush

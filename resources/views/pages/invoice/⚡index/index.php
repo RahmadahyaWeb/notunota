@@ -130,7 +130,7 @@ new class extends Component
 
         $wa_link = "https://wa.me/{$phone}?text={$encoded_message}";
 
-        return redirect()->away($wa_link);
+        $this->dispatch('open-wa', url: $wa_link);
     }
 
     #[Computed]

@@ -20,4 +20,19 @@ class InvoiceItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    protected static function booted()
+    {
+        static::created(function ($item) {
+            $item->invoice->recalculate_total();
+        });
+
+        static::updated(function ($item) {
+            $item->invoice->recalculate_total();
+        });
+
+        static::deleted(function ($item) {
+            $item->invoice->recalculate_total();
+        });
+    }
 }

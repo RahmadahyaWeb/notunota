@@ -153,7 +153,7 @@
                                     <flux:menu.separator />
                                     <flux:menu.item icon="paper-airplane"
                                         wire:click="sendInvoice({{ $invoice->id }})">
-                                        Kirim Invoice
+                                        Bagikan via WhatsApp
                                     </flux:menu.item>
                                     <flux:menu.separator />
                                     <flux:menu.item variant="danger" icon="trash"
@@ -205,4 +205,15 @@
             </div>
         </div>
     </flux:modal>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('livewire:init', () => {
+                Livewire.on('open-wa', (event) => {
+                    console.log(event)
+                    window.open(event.url, '_blank');
+                });
+            });
+        </script>
+    @endpush
 </div>

@@ -47,6 +47,7 @@ new class extends Component
             'subtotal' => $invoice->subtotal,
             'total' => $invoice->total,
             'status' => $invoice->status,
+            'public_token' => $invoice->public_token,
         ];
     }
 };

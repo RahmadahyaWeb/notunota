@@ -17,16 +17,18 @@
 
             {{-- Informasi Customer --}}
             <div class="space-y-4">
-                <div class="flex items-center justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
                     <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                         Informasi Pelanggan
                     </h3>
 
                     <flux:modal.trigger name="add-customer">
-                        <flux:button size="sm">
+                        <flux:button size="sm" class="w-full sm:w-auto" variant="primary">
                             + Tambah Pelanggan
                         </flux:button>
                     </flux:modal.trigger>
+
                 </div>
 
                 <flux:select wire:model.change.live="customer_id" label="Pilih Pelanggan"
@@ -72,14 +74,11 @@
 
             {{-- Item Produk --}}
             <div class="space-y-4">
-                <div class="flex items-center justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
                     <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                         Daftar Produk / Layanan
                     </h3>
-
-                    <flux:button wire:click="addItem" size="sm">
-                        + Tambah Item
-                    </flux:button>
                 </div>
 
                 <p class="text-xs text-gray-500">
@@ -125,6 +124,10 @@
 
                         </div>
                     @endforeach
+
+                    <flux:button wire:click="addItem" variant="outline" class="w-full border-dashed py-3">
+                        + Tambah Produk / Layanan
+                    </flux:button>
                 </div>
             </div>
 

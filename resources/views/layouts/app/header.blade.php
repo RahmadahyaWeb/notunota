@@ -13,31 +13,14 @@
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
         @endauth
 
-        <a href="/" class="hidden md:flex items-center gap-2 group mr-4">
-
-            {{-- ICON --}}
-            <div class="w-8 h-8 rounded-lg bg-black text-white flex items-center justify-center text-sm font-bold">
-                N
-            </div>
-
-            {{-- TEXT --}}
-            <div class="flex items-baseline gap-1">
-                <span class="text-lg font-semibold tracking-tight text-gray-900 group-hover:text-black">
-                    Notu
-                </span>
-
-                <span class="text-lg font-semibold tracking-tight text-gray-500 group-hover:text-gray-700">
-                    Nota
-                </span>
-
-                <span class="text-lg font-semibold text-gray-400">.</span>
-            </div>
-
-        </a>
+        <flux:brand href="#" logo="{{ asset('logo.png') }}" name="Notunota" class="max-lg:hidden dark:hidden" />
 
         <flux:navbar class="max-lg:hidden">
             @auth
-                <flux:navbar.item icon="layout-grid" href="{{ route('dashboard') }}">Dashboard</flux:navbar.item>
+                <flux:navbar.item icon="layout-grid" href="{{ route('dashboard') }}"
+                    :current="request()->routeIs('dashboard')">
+                    Dashboard
+                </flux:navbar.item>
 
                 <flux:dropdown>
                     <flux:navbar.item icon="document-text" icon-trailing="chevron-down"
@@ -129,7 +112,7 @@
         class="lg:hidden bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-700">
         <flux:sidebar.header>
             @auth
-                <flux:sidebar.brand href="#" name="{{ Auth::user()->name }}" />
+                <flux:sidebar.brand logo="{{ asset('logo.png') }}" href="/" name="Notunota" />
             @endauth
 
             <flux:sidebar.collapse

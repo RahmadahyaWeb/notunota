@@ -27,7 +27,7 @@ new class extends Component
 
     public function mount()
     {
-        $business = Auth::user()->business;
+        $business = tenant();
 
         if ($business) {
             $this->business_id = $business->id;

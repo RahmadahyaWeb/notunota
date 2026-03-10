@@ -75,9 +75,9 @@
                 Aksi Cepat
             </flux:heading>
             <div class="grid gap-2">
-                <flux:button variant="primary">Buat Invoice</flux:button>
-                <flux:button>Tambah Klien</flux:button>
-                <flux:button>Tambah Produk</flux:button>
+                <flux:button variant="primary" href="{{ route('invoice.create') }}">Buat Invoice</flux:button>
+                <flux:button href="{{ route('customer.index') }}">Tambah Pelanggan</flux:button>
+                <flux:button href="{{ route('product.index') }}">Tambah Produk</flux:button>
                 <flux:button>Lihat Laporan</flux:button>
             </div>
         </flux:card>

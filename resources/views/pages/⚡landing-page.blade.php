@@ -239,7 +239,7 @@ new class extends Component {
 
             <div class="grid md:grid-cols-2 gap-8">
 
-                <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
+                {{-- <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
 
                     <div class="font-semibold">
                         Kirim via WhatsApp
@@ -250,7 +250,7 @@ new class extends Component {
                         hanya dengan satu klik.
                     </p>
 
-                </div>
+                </div> --}}
 
 
                 <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition bg-gray-50">
