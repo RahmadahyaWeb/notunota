@@ -8,11 +8,6 @@ class Business extends Model
 {
     protected $guarded = [];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function customers()
     {
         return $this->hasMany(Customer::class);
@@ -31,5 +26,12 @@ class Business extends Model
     public function invoice_sequences()
     {
         return $this->hasMany(InvoiceSequence::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'business_users')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 }

@@ -9,7 +9,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard', 'pages::dashboard')->name('dashboard');
 
     // INVOICES
-    Route::livewire('invoice', 'pages::invoice.index')->name('invoice.index');
+    Route::livewire('invoice', 'pages::invoice.index')
+        ->name('invoice.index');
+
     Route::livewire('invoice/create/{token?}', 'pages::invoice.create')
         ->name('invoice.create');
 

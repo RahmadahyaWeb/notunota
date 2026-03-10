@@ -25,6 +25,11 @@ new class extends Component
     #[Url(history: true, except: '')]
     public $invoice_number = '';
 
+    public function mount()
+    {
+        $this->authorize('viewAny', Invoice::class);
+    }
+
     #[Computed]
     public function stats()
     {

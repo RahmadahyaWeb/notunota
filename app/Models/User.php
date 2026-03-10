@@ -88,4 +88,13 @@ class User extends Authenticatable
             'business_users'
         )->withPivot('role');
     }
+
+    public function roleInBusiness($business_id)
+    {
+        $membership = $this->businesses()
+            ->where('business_id', $business_id)
+            ->first();
+
+        return $membership?->pivot->role;
+    }
 }
