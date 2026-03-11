@@ -13,7 +13,7 @@
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
         @endauth
 
-        <flux:brand href="#" logo="{{ asset('logo.png') }}" name="Notunota" class="max-lg:hidden dark:hidden" />
+        <flux:brand href="/" logo="{{ asset('logo.png') }}" name="Notunota" class="max-lg:hidden dark:hidden" />
 
         <flux:navbar class="max-lg:hidden">
             @auth
