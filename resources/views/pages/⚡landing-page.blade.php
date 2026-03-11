@@ -10,7 +10,7 @@ new class extends Component {
 <div>
 
     {{-- HERO --}}
-    <div class="mx-auto py-24 max-w-6xl px-6">
+    <div class="mx-auto py-24">
 
         <div class="grid md:grid-cols-2 gap-16 items-center">
 
@@ -296,7 +296,6 @@ new class extends Component {
 
     </div>
 
-    {{-- INTEGRASI --}}
     <div class="py-24 bg-gray-50">
 
         <div class="max-w-6xl mx-auto px-6">
@@ -375,7 +374,7 @@ new class extends Component {
     </div>
 
     {{-- CTA --}}
-    <div class="py-24 bg-black text-white">
+    <div class="py-24 bg-black text-white mt-24">
 
         <div class="max-w-3xl mx-auto text-center px-6">
 
@@ -400,7 +399,7 @@ new class extends Component {
     {{-- FOOTER --}}
     <div class="border-t py-8">
 
-        <div class="max-w-6xl mx-auto px-6 text-sm text-gray-500 flex justify-between flex-wrap gap-4">
+        <div class="mx-auto text-sm text-gray-500 flex justify-between flex-wrap gap-4">
 
             <span>
                 © {{ date('Y') }} NotuNota
