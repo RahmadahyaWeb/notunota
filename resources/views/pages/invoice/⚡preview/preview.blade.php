@@ -135,13 +135,11 @@
                 </div>
             </flux:card> --}}
 
-            @if ($data['status'] == 'draft')
-                <flux:button variant="primary" icon="paper-airplane" class="w-full">Kirim Invoice</flux:button>
+            @if ($data['status'] != 'draft')
+                <flux:button icon="document-duplicate" variant="primary" class="w-full" onclick="copyInvoiceLink()">
+                    Bagikan Invoice
+                </flux:button>
             @endif
-
-            <flux:button icon="document-duplicate" variant="primary" class="w-full" onclick="copyInvoiceLink()">
-                Bagikan Invoice
-            </flux:button>
 
             <p id="shareMsg" class="text-green-600 text-xs text-center hidden">
                 Link invoice berhasil disalin
