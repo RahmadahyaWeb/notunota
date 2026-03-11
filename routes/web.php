@@ -22,8 +22,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // SETTING
     Route::livewire('manage/setting', 'pages::setting.index')->name('setting.index');
+
+    // EMPLOYEE
+    Route::livewire('manage/employee', 'pages::employee.index')->name('employee.index');
 });
 
 Route::livewire('invoice/preview/{token}', 'pages::invoice.preview')->name('invoice.preview');
+
+Route::livewire('join/{token}', 'pages::join-business')->name('join-business');
 
 require __DIR__.'/settings.php';
