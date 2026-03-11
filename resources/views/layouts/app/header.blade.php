@@ -48,7 +48,9 @@
                 </flux:dropdown>
 
                 <flux:dropdown>
-                    <flux:navbar.item icon="user-group" icon-trailing="chevron-down">Manajemen</flux:navbar.item>
+                    <flux:navbar.item icon="user-group" icon-trailing="chevron-down" :current="request()->is('manage*')">
+                        Manajemen
+                    </flux:navbar.item>
 
                     <flux:navmenu>
                         <flux:navmenu.item icon="users" href="{{ route('customer.index') }}">
@@ -68,10 +70,6 @@
         </flux:navbar>
 
         <flux:spacer />
-
-        {{-- <flux:navbar class="me-4">
-            <flux:navbar.item class="max-lg:hidden" icon="information-circle" href="#" label="Help" />
-        </flux:navbar> --}}
 
         @auth
             <flux:dropdown position="top" align="start">
@@ -121,42 +119,66 @@
 
         <flux:sidebar.nav>
             @auth
-                <flux:sidebar.item icon="layout-grid" href="#" current>Dashboard</flux:sidebar.item>
+
+                <flux:sidebar.item icon="layout-grid" href="{{ route('dashboard') }}"
+                    :current="request()->routeIs('dashboard')">
+                    Dashboard
+                </flux:sidebar.item>
+
 
                 <flux:sidebar.group expandable heading="Invoice" class="grid">
-                    <flux:sidebar.item .item icon="plus-circle" href="{{ route('invoice.create') }}">
+
+                    <flux:sidebar.item icon="plus-circle" href="{{ route('invoice.create') }}"
+                        :current="request()->routeIs('invoice.create')">
                         Buat Invoice
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="list-bullet" href="{{ route('invoice.index') }}">
+                    <flux:sidebar.item icon="list-bullet" href="{{ route('invoice.index') }}"
+                        :current="request()->routeIs('invoice.index') && !request('status')">
                         Semua Invoice
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="clock" href="{{ route('invoice.index', ['status' => 'sent']) }}">
+                    <flux:sidebar.item icon="clock" href="{{ route('invoice.index', ['status' => 'sent']) }}"
+                        :current="request()->routeIs('invoice.index') && request('status') === 'sent'">
                         Tagihan Aktif
                     </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="check-circle" href="{{ route('invoice.index', ['status' => 'paid']) }}">
+                    <flux:sidebar.item icon="check-circle" href="{{ route('invoice.index', ['status' => 'paid']) }}"
+                        :current="request()->routeIs('invoice.index') && request('status') === 'paid'">
                         Sudah Lunas
                     </flux:sidebar.item>
+
                 </flux:sidebar.group>
 
+
                 <flux:sidebar.group expandable heading="Manajemen" class="grid">
-                    <flux:sidebar.item icon="users" href="{{ route('customer.index') }}">
+
+                    <flux:sidebar.item icon="users" href="{{ route('customer.index') }}"
+                        :current="request()->routeIs('customer.*')">
                         Daftar Pelanggan
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="shopping-bag" href="{{ route('product.index') }}">Katalog Produk
+
+                    <flux:sidebar.item icon="shopping-bag" href="{{ route('product.index') }}"
+                        :current="request()->routeIs('product.*')">
+                        Katalog Produk
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="cog-6-tooth" href="{{ route('setting.index') }}"
+                        :current="request()->routeIs('setting.*')">
+                        Pengaturan Toko
+                    </flux:sidebar.item>
+
                 </flux:sidebar.group>
+
             @endauth
         </flux:sidebar.nav>
 
-        <flux:sidebar.spacer />
+        {{-- <flux:sidebar.spacer />
 
         <flux:sidebar.nav>
-            <flux:sidebar.item icon="cog-6-tooth" href="#">Settings</flux:sidebar.item>
+            <flux:sidebar.item icon="cog-6-tooth" href="">Settings</flux:sidebar.item>
             <flux:sidebar.item icon="information-circle" href="#">Help</flux:sidebar.item>
-        </flux:sidebar.nav>
+        </flux:sidebar.nav> --}}
     </flux:sidebar>
 
     {{ $slot }}

@@ -2,6 +2,7 @@
 
 use App\Models\Invoice;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 new class extends Component
@@ -19,6 +20,10 @@ new class extends Component
     public $due_invoices = [];
 
     public $greeting;
+
+    public $chart_labels = [];
+
+    public $chart_data = [];
 
     public function mount()
     {
@@ -45,6 +50,40 @@ new class extends Component
         $this->due_invoices = Invoice::where('status', 'sent')
             ->whereDate('due_date', '<=', Carbon::now()->addDays(7))
             ->get();
+
+        $this->loadRevenueChart();
+    }
+
+    public function loadRevenueChart()
+    {
+        $startDate = Carbon::now()->subDays(29)->startOfDay();
+        $endDate = Carbon::now()->endOfDay();
+
+        $revenues = Invoice::select(
+            DB::raw('DATE(invoice_date) as date'),
+            DB::raw('SUM(total) as total')
+        )
+            ->where('status', 'paid')
+            ->whereBetween('invoice_date', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+
+        $labels = [];
+        $data = [];
+
+        for ($i = 0; $i < 30; $i++) {
+
+            $date = $startDate->copy()->addDays($i)->format('Y-m-d');
+
+            $labels[] = Carbon::parse($date)->format('d M');
+
+            $data[] = $revenues[$date]->total ?? 0;
+        }
+
+        $this->chart_labels = $labels;
+        $this->chart_data = $data;
     }
 
     public function set_greeting()

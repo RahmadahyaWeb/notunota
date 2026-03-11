@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PreviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::landing-page')->name('home');
@@ -16,16 +15,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('invoice.create');
 
     // CUSTOMER
-    Route::livewire('customer', 'pages::customer.index')->name('customer.index');
+    Route::livewire('manage/customer', 'pages::customer.index')->name('customer.index');
 
     // PRODUCT
-    Route::livewire('product', 'pages::product.index')->name('product.index');
+    Route::livewire('manage/product', 'pages::product.index')->name('product.index');
 
     // SETTING
-    Route::livewire('setting', 'pages::setting.index')->name('setting.index');
+    Route::livewire('manage/setting', 'pages::setting.index')->name('setting.index');
 });
 
-// Route::get('invoice/preview/{token}', PreviewController::class)->name('invoice.preview');
 Route::livewire('invoice/preview/{token}', 'pages::invoice.preview')->name('invoice.preview');
 
 require __DIR__.'/settings.php';

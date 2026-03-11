@@ -10,38 +10,39 @@ new class extends Component {
 <div>
 
     {{-- HERO --}}
-    <div class="mx-auto py-24">
+    <div class="mx-auto py-24 max-w-6xl px-6">
 
         <div class="grid md:grid-cols-2 gap-16 items-center">
 
-            {{-- LEFT --}}
+            <!-- LEFT -->
             <div>
 
-                <div class="text-sm font-semibold tracking-wide text-gray-500">
-                    NOTUNOTA
+                <div
+                    class="inline-flex items-center text-xs font-medium px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+                    Simple Invoice App
                 </div>
 
-                <h1 class="text-4xl md:text-5xl font-bold leading-tight mt-3">
-                    Bikin Invoice Profesional
+                <h1 class="text-4xl md:text-5xl font-bold leading-tight mt-4">
+                    Tidak Perlu Lagi
                     <br>
-                    Tanpa Ribet
+                    Membuat Invoice di Excel
                 </h1>
 
                 <p class="mt-6 text-gray-600 leading-relaxed">
-                    Tidak perlu lagi membuat invoice di Word atau Excel.
                     Dengan <span class="font-medium text-gray-900">NotuNota</span>,
-                    Anda dapat membuat invoice rapi, menyimpan data pelanggan,
-                    dan mengirim invoice ke customer dalam hitungan detik.
+                    Anda bisa membuat invoice profesional, menyimpan pelanggan,
+                    dan melihat riwayat transaksi dalam satu tempat.
                 </p>
 
                 <div class="mt-8 flex flex-wrap gap-4">
 
                     <a href="/register" class="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition">
-                        Buat Invoice Sekarang
+                        Mulai Buat Invoice
                     </a>
 
-                    <a href="#fitur" class="px-6 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                        Lihat Fitur
+                    <a href="#cara-kerja"
+                        class="px-6 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                        Cara Kerja
                     </a>
 
                 </div>
@@ -49,12 +50,12 @@ new class extends Component {
             </div>
 
 
-            {{-- PREVIEW --}}
+            <!-- PREVIEW -->
             <div>
 
-                <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-7">
+                <div class="bg-white border border-gray-200 rounded-xl shadow-lg p-7">
 
-                    {{-- HEADER --}}
+                    <!-- HEADER -->
                     <div class="flex items-start justify-between pb-5 border-b">
 
                         <div>
@@ -73,14 +74,18 @@ new class extends Component {
                             </div>
 
                             <div class="text-sm font-semibold mt-1">
-                                INV-001
+                                INV-1042
                             </div>
+
+                            <span class="inline-block mt-2 text-xs px-2 py-1 bg-green-100 text-green-700 rounded">
+                                Paid
+                            </span>
                         </div>
 
                     </div>
 
 
-                    {{-- INFO --}}
+                    <!-- INFO -->
                     <div class="grid grid-cols-2 gap-6 text-sm py-5">
 
                         <div>
@@ -110,7 +115,7 @@ new class extends Component {
                     </div>
 
 
-                    {{-- TABLE --}}
+                    <!-- TABLE -->
                     <div class="text-sm">
 
                         <div class="grid grid-cols-12 text-xs text-gray-400 border-b pb-2">
@@ -134,7 +139,7 @@ new class extends Component {
                     </div>
 
 
-                    {{-- TOTAL --}}
+                    <!-- TOTAL -->
                     <div class="flex justify-end mt-6">
 
                         <div class="w-48 border-t pt-3 flex justify-between text-sm font-semibold">
@@ -152,62 +157,63 @@ new class extends Component {
 
     </div>
 
-
     {{-- FITUR --}}
-    <div id="fitur" class="bg-gray-50 py-24">
+    <div id="cara-kerja" class="py-24 bg-gray-50">
 
         <div class="max-w-6xl mx-auto px-6">
 
             <div class="text-center mb-16">
 
                 <h2 class="text-3xl font-semibold">
-                    Semua yang Anda butuhkan untuk membuat invoice
+                    Membuat Invoice Hanya 3 Langkah
                 </h2>
 
                 <p class="text-gray-600 mt-4">
-                    Dirancang supaya Anda bisa fokus ke bisnis,
-                    bukan mengurus format invoice.
+                    Dirancang agar Anda bisa membuat invoice dengan cepat.
                 </p>
 
             </div>
 
-
             <div class="grid md:grid-cols-3 gap-8">
 
-                <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
+                <div class="bg-white border rounded-xl p-6 text-center">
+
+                    <div class="text-3xl font-bold text-gray-900 mb-3">1</div>
 
                     <div class="font-semibold mb-2">
-                        Buat Invoice dalam Hitungan Detik
+                        Tambahkan Pelanggan
                     </div>
 
                     <p class="text-sm text-gray-600">
-                        Isi data pelanggan, tambah item, dan invoice langsung siap.
+                        Simpan data customer agar tidak perlu mengetik ulang.
                     </p>
 
                 </div>
 
+                <div class="bg-white border rounded-xl p-6 text-center">
 
-                <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
+                    <div class="text-3xl font-bold text-gray-900 mb-3">2</div>
 
                     <div class="font-semibold mb-2">
-                        Simpan Data Customer
+                        Buat Invoice
                     </div>
 
                     <p class="text-sm text-gray-600">
-                        Tidak perlu mengetik ulang pelanggan setiap kali membuat invoice.
+                        Tambahkan item dan harga dengan cepat.
                     </p>
 
                 </div>
 
+                <div class="bg-white border rounded-xl p-6 text-center">
 
-                <div class="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
+                    <div class="text-3xl font-bold text-gray-900 mb-3">3</div>
 
                     <div class="font-semibold mb-2">
-                        Tampilan Invoice Profesional
+                        Invoice Siap Digunakan
                     </div>
 
                     <p class="text-sm text-gray-600">
-                        Invoice terlihat rapi dan siap dikirim ke customer Anda.
+                        Invoice terlihat rapi dan siap dikirim ke customer.
                     </p>
 
                 </div>
@@ -218,8 +224,6 @@ new class extends Component {
 
     </div>
 
-
-    {{-- INTEGRASI --}}
     <div class="py-24">
 
         <div class="max-w-6xl mx-auto px-6">
@@ -227,42 +231,62 @@ new class extends Component {
             <div class="text-center mb-16">
 
                 <h2 class="text-3xl font-semibold">
-                    Kirim Invoice Lebih Cepat
+                    Fitur yang Membantu Mengelola Invoice
                 </h2>
 
                 <p class="text-gray-600 mt-4">
-                    Kirim invoice langsung ke customer tanpa perlu download file dulu.
+                    NotuNota tidak hanya membuat invoice, tetapi juga membantu
+                    Anda memahami penjualan dari setiap transaksi.
                 </p>
 
             </div>
 
-
             <div class="grid md:grid-cols-2 gap-8">
 
-                {{-- <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
+                <!-- PENJUALAN -->
+                <div class="bg-white border border-gray-200 rounded-xl p-8 hover:shadow-lg transition">
 
-                    <div class="font-semibold">
-                        Kirim via WhatsApp
+                    <div class="font-semibold text-lg mb-2">
+                        Catatan Penjualan Otomatis
                     </div>
 
-                    <p class="text-sm text-gray-600 mt-2">
-                        Kirim invoice langsung ke pelanggan melalui WhatsApp
-                        hanya dengan satu klik.
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        Setiap invoice yang Anda buat otomatis tercatat sebagai
+                        penjualan sehingga Anda dapat melihat riwayat transaksi
+                        dan memahami perkembangan bisnis Anda.
                     </p>
 
-                </div> --}}
-
-
-                <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition bg-gray-50">
-
-                    <div class="font-semibold">
-                        Telegram Bot (Coming Soon)
+                    <div class="mt-4 text-xs text-gray-500">
+                        • Riwayat transaksi tersimpan rapi
+                        <br>
+                        • Total penjualan dapat dihitung otomatis
                     </div>
 
-                    <p class="text-sm text-gray-600 mt-2">
-                        Lihat ringkasan invoice dan laporan bisnis
-                        langsung dari Telegram bot.
+                </div>
+
+
+                <!-- TELEGRAM -->
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 relative">
+
+                    <div class="absolute top-4 right-4 text-xs bg-black text-white px-2 py-1 rounded">
+                        Coming Soon
+                    </div>
+
+                    <div class="font-semibold text-lg mb-2">
+                        Telegram Bot untuk Ringkasan Bisnis
+                    </div>
+
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        Nantinya Anda dapat melihat ringkasan penjualan dan
+                        aktivitas invoice langsung melalui Telegram bot,
+                        tanpa perlu membuka dashboard.
                     </p>
+
+                    <div class="mt-4 text-xs text-gray-500">
+                        • Notifikasi ringkasan penjualan
+                        <br>
+                        • Statistik bisnis langsung di Telegram
+                    </div>
 
                 </div>
 
@@ -272,6 +296,83 @@ new class extends Component {
 
     </div>
 
+    {{-- INTEGRASI --}}
+    <div class="py-24 bg-gray-50">
+
+        <div class="max-w-6xl mx-auto px-6">
+
+            <div class="text-center mb-16">
+
+                <h2 class="text-3xl font-semibold">
+                    Cocok untuk Berbagai Jenis Bisnis
+                </h2>
+
+                <p class="text-gray-600 mt-4">
+                    NotuNota membantu berbagai jenis usaha membuat invoice
+                    lebih cepat dan lebih rapi.
+                </p>
+
+            </div>
+
+
+            <div class="grid md:grid-cols-4 gap-6 text-center">
+
+                <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+                    <div class="font-semibold mb-2">
+                        Freelancer
+                    </div>
+
+                    <p class="text-sm text-gray-600">
+                        Kirim invoice proyek ke klien dengan format profesional.
+                    </p>
+
+                </div>
+
+
+                <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+                    <div class="font-semibold mb-2">
+                        Jasa Digital
+                    </div>
+
+                    <p class="text-sm text-gray-600">
+                        Buat invoice untuk website, desain, atau layanan digital.
+                    </p>
+
+                </div>
+
+
+                <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+                    <div class="font-semibold mb-2">
+                        Konsultan
+                    </div>
+
+                    <p class="text-sm text-gray-600">
+                        Catat transaksi layanan konsultasi dengan invoice rapi.
+                    </p>
+
+                </div>
+
+
+                <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+                    <div class="font-semibold mb-2">
+                        UMKM
+                    </div>
+
+                    <p class="text-sm text-gray-600">
+                        Kelola penagihan pelanggan dengan lebih mudah.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
     {{-- CTA --}}
     <div class="py-24 bg-black text-white">
@@ -295,7 +396,6 @@ new class extends Component {
         </div>
 
     </div>
-
 
     {{-- FOOTER --}}
     <div class="border-t py-8">

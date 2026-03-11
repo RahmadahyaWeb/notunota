@@ -60,13 +60,12 @@
             <flux:heading size="md">
                 Grafik Pendapatan
             </flux:heading>
+
             <flux:text size="sm" class="text-zinc-500 mb-4">
                 30 hari terakhir
             </flux:text>
 
-            <div class="h-56 rounded-lg bg-zinc-100 flex items-center justify-center text-sm text-zinc-500">
-                Area Grafik
-            </div>
+            <div id="revenue_chart" class="h-56"></div>
         </flux:card>
 
         {{-- QUICK ACTIONS --}}
@@ -127,5 +126,75 @@
         </flux:card>
 
     </div>
+
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+
+                const options = {
+
+                    chart: {
+                        type: 'area',
+                        height: 220,
+                        toolbar: {
+                            show: false
+                        },
+                        redrawOnWindowResize: true
+                    },
+
+                    series: [{
+                        name: 'Pendapatan',
+                        data: @json($chart_data)
+                    }],
+
+                    xaxis: {
+                        categories: @json($chart_labels),
+
+                        labels: {
+                            rotate: -45,
+                            rotateAlways: true,
+                            hideOverlappingLabels: false,
+                            showDuplicates: true,
+                            style: {
+                                fontSize: '10px'
+                            }
+                        },
+
+                        tickAmount: 10
+                    },
+
+                    stroke: {
+                        curve: 'smooth',
+                        width: 3
+                    },
+
+                    dataLabels: {
+                        enabled: false
+                    },
+
+                    tooltip: {
+                        y: {
+                            formatter: function(value) {
+                                return 'Rp ' + value.toLocaleString('id-ID');
+                            }
+                        }
+                    },
+
+                    grid: {
+                        strokeDashArray: 4
+                    }
+                };
+
+                const chart = new ApexCharts(
+                    document.querySelector("#revenue_chart"),
+                    options
+                );
+
+                chart.render();
+            });
+        </script>
+    @endpush
 
 </div>
