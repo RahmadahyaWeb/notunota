@@ -144,6 +144,22 @@ new class extends Component
         });
     }
 
+    public function updateStatus($invoiceId, $status)
+    {
+        $invoice = authorize_model('update', Invoice::class, $invoiceId);
+
+        $invoice->update([
+            'status' => $status,
+        ]);
+
+        $this->dispatch(
+            'notify',
+            title: 'Berhasil',
+            message: 'Status invoice berhasil diperbarui.',
+            type: 'success'
+        );
+    }
+
     #[Computed]
     public function invoices()
     {

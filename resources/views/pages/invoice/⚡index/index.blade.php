@@ -134,7 +134,49 @@
                         <flux:table.cell>{{ date('d-m-Y', strtotime($invoice->invoice_date)) }}</flux:table.cell>
                         <flux:table.cell>{{ date('d-m-Y', strtotime($invoice->due_date)) }}</flux:table.cell>
                         <flux:table.cell>
-                            {{ $invoice->status }}
+
+                            <flux:dropdown>
+
+                                <flux:button size="sm" icon:trailing="chevron-down"
+                                    class="
+                @class([
+                    'bg-gray-100 text-gray-700' => $invoice->status === 'draft',
+                    'bg-blue-100 text-blue-700' => $invoice->status === 'sent',
+                    'bg-green-100 text-green-700' => $invoice->status === 'paid',
+                    'bg-red-100 text-red-700' => $invoice->status === 'cancelled',
+                ])
+            ">
+                                    {{ ucfirst($invoice->status) }}
+                                </flux:button>
+
+                                <flux:menu>
+
+                                    <flux:menu.item icon="document"
+                                        wire:click="updateStatus({{ $invoice->id }}, 'draft')">
+                                        Draft
+                                    </flux:menu.item>
+
+                                    <flux:menu.item icon="paper-airplane"
+                                        wire:click="updateStatus({{ $invoice->id }}, 'sent')">
+                                        Terkirim
+                                    </flux:menu.item>
+
+                                    <flux:menu.item icon="check-circle"
+                                        wire:click="updateStatus({{ $invoice->id }}, 'paid')">
+                                        Lunas
+                                    </flux:menu.item>
+
+                                    <flux:menu.separator />
+
+                                    <flux:menu.item variant="danger" icon="x-circle"
+                                        wire:click="updateStatus({{ $invoice->id }}, 'cancelled')">
+                                        Batal
+                                    </flux:menu.item>
+
+                                </flux:menu>
+
+                            </flux:dropdown>
+
                         </flux:table.cell>
                         <flux:table.cell align="end" class="font-mono">Rp
                             {{ number_format($invoice->total, 0, ',', '.') }}</flux:table.cell>
