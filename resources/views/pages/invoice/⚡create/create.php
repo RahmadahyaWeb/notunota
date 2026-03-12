@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Customer;
+use App\Models\Invoice;
 use App\Services\CustomerService;
 use App\Services\InvoiceService;
 use Livewire\Attributes\Computed;
@@ -41,6 +42,8 @@ new class extends Component
 
     public function mount($token = null)
     {
+        $this->authorize('create', [Invoice::class, tenant()]);
+
         $business = tenant();
 
         $this->customers = $business->customers()->get();
@@ -54,6 +57,8 @@ new class extends Component
                 ->with('items')
                 ->where('public_token', $token)
                 ->firstOrFail();
+
+            $this->authorize('update', $invoice);
 
             $this->invoice = $invoice;
 

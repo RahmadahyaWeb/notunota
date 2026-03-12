@@ -27,6 +27,8 @@ new class extends Component
 
     public function mount()
     {
+        $this->authorize('update', tenant());
+
         $business = tenant();
 
         if ($business) {

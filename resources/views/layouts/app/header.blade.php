@@ -22,57 +22,83 @@
                     Dashboard
                 </flux:navbar.item>
 
-                <flux:dropdown>
-                    <flux:navbar.item icon="document-text" icon-trailing="chevron-down"
-                        :current="request()->is('invoice*')">
-                        Invoice
-                    </flux:navbar.item>
+                @if (canBusiness('view invoices') || canBusiness('create invoices'))
+                    <flux:dropdown>
 
-                    <flux:navmenu>
-                        <flux:navmenu.item icon="plus-circle" href="{{ route('invoice.create') }}">
-                            Buat Invoice
-                        </flux:navmenu.item>
+                        <flux:navbar.item icon="document-text" icon-trailing="chevron-down"
+                            :current="request()->is('invoice*')">
+                            Invoice
+                        </flux:navbar.item>
 
-                        <flux:navmenu.item icon="list-bullet" href="{{ route('invoice.index') }}">
-                            Daftar Invoice
-                        </flux:navmenu.item>
+                        <flux:navmenu>
 
-                        <flux:navmenu.item icon="clock" href="{{ route('invoice.index', ['status' => 'sent']) }}">
-                            Tagihan Aktif
-                        </flux:navmenu.item>
+                            @if (canBusiness('create invoices'))
+                                <flux:navmenu.item icon="plus-circle" href="{{ route('invoice.create') }}">
+                                    Buat Invoice
+                                </flux:navmenu.item>
+                            @endif
 
-                        <flux:navmenu.item icon="check-circle" href="{{ route('invoice.index', ['status' => 'paid']) }}">
-                            Sudah Lunas
-                        </flux:navmenu.item>
-                    </flux:navmenu>
-                </flux:dropdown>
+                            @if (canBusiness('view invoices'))
+                                <flux:navmenu.item icon="list-bullet" href="{{ route('invoice.index') }}">
+                                    Daftar Invoice
+                                </flux:navmenu.item>
 
-                <flux:dropdown>
-                    <flux:navbar.item icon="user-group" icon-trailing="chevron-down" :current="request()->is('manage*')">
-                        Manajemen
-                    </flux:navbar.item>
+                                <flux:navmenu.item icon="clock" href="{{ route('invoice.index', ['status' => 'sent']) }}">
+                                    Tagihan Aktif
+                                </flux:navmenu.item>
 
-                    <flux:navmenu>
-                        <flux:navmenu.item icon="users" href="{{ route('customer.index') }}">
-                            Daftar Pelanggan
-                        </flux:navmenu.item>
+                                <flux:navmenu.item icon="check-circle"
+                                    href="{{ route('invoice.index', ['status' => 'paid']) }}">
+                                    Sudah Lunas
+                                </flux:navmenu.item>
+                            @endif
 
-                        <flux:navmenu.item icon="shopping-bag" href="{{ route('product.index') }}">
-                            Katalog Produk
-                        </flux:navmenu.item>
+                        </flux:navmenu>
 
-                        <flux:navmenu.separator />
+                    </flux:dropdown>
+                @endif
 
-                        <flux:navmenu.item icon="user-plus" href="{{ route('employee.index') }}">
-                            Pegawai
-                        </flux:navmenu.item>
+                @if (canBusiness('view customers') ||
+                        canBusiness('view products') ||
+                        canBusiness('manage users') ||
+                        canBusiness('update business'))
+                    <flux:dropdown>
 
-                        <flux:navmenu.item icon="cog-6-tooth" href="{{ route('setting.index') }}">
-                            Pengaturan Toko
-                        </flux:navmenu.item>
+                        <flux:navbar.item icon="user-group" icon-trailing="chevron-down"
+                            :current="request()->is('manage*')">
+                            Manajemen
+                        </flux:navbar.item>
 
-                    </flux:navmenu>
-                </flux:dropdown>
+                        <flux:navmenu>
+
+                            @if (canBusiness('view customers'))
+                                <flux:navmenu.item icon="users" href="{{ route('customer.index') }}">
+                                    Daftar Pelanggan
+                                </flux:navmenu.item>
+                            @endif
+
+                            @if (canBusiness('view products'))
+                                <flux:navmenu.item icon="shopping-bag" href="{{ route('product.index') }}">
+                                    Katalog Produk
+                                </flux:navmenu.item>
+                            @endif
+
+                            @if (canBusiness('manage users'))
+                                <flux:navmenu.item icon="user-plus" href="{{ route('employee.index') }}">
+                                    Pegawai
+                                </flux:navmenu.item>
+                            @endif
+
+                            @if (canBusiness('update business'))
+                                <flux:navmenu.item icon="cog-6-tooth" href="{{ route('setting.index') }}">
+                                    Pengaturan Toko
+                                </flux:navmenu.item>
+                            @endif
+
+                        </flux:navmenu>
+
+                    </flux:dropdown>
+                @endif
             @endauth
         </flux:navbar>
 
@@ -133,59 +159,57 @@
                 </flux:sidebar.item>
 
 
-                <flux:sidebar.group expandable heading="Invoice" class="grid">
+                @if (canBusiness('view invoices') || canBusiness('create invoices'))
+                    <flux:sidebar.group expandable heading="Invoice" class="grid">
 
-                    <flux:sidebar.item icon="plus-circle" href="{{ route('invoice.create') }}"
-                        :current="request()->routeIs('invoice.create')">
-                        Buat Invoice
-                    </flux:sidebar.item>
+                        <flux:sidebar.item icon="plus-circle" href="{{ route('invoice.create') }}">
+                            Buat Invoice
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="list-bullet" href="{{ route('invoice.index') }}"
-                        :current="request()->routeIs('invoice.index') && !request('status')">
-                        Semua Invoice
-                    </flux:sidebar.item>
+                        <flux:sidebar.item icon="list-bullet" href="{{ route('invoice.index') }}">
+                            Semua Invoice
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="clock" href="{{ route('invoice.index', ['status' => 'sent']) }}"
-                        :current="request()->routeIs('invoice.index') && request('status') === 'sent'">
-                        Tagihan Aktif
-                    </flux:sidebar.item>
+                        <flux:sidebar.item icon="clock" href="{{ route('invoice.index', ['status' => 'sent']) }}"
+                            :current="request()->routeIs('invoice.index') && request('status') === 'sent'">
+                            Tagihan Aktif
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="check-circle" href="{{ route('invoice.index', ['status' => 'paid']) }}"
-                        :current="request()->routeIs('invoice.index') && request('status') === 'paid'">
-                        Sudah Lunas
-                    </flux:sidebar.item>
+                        <flux:sidebar.item icon="check-circle" href="{{ route('invoice.index', ['status' => 'paid']) }}"
+                            :current="request()->routeIs('invoice.index') && request('status') === 'paid'">
+                            Sudah Lunas
+                        </flux:sidebar.item>
 
-                </flux:sidebar.group>
+                    </flux:sidebar.group>
+                @endif
 
 
-                <flux:sidebar.group expandable heading="Manajemen" class="grid">
+                @if (canBusiness('view customers') ||
+                        canBusiness('view products') ||
+                        canBusiness('manage users') ||
+                        canBusiness('update business'))
+                    <flux:sidebar.group expandable heading="Manajemen" class="grid">
 
-                    <flux:sidebar.item icon="users" href="{{ route('customer.index') }}"
-                        :current="request()->routeIs('customer.*')">
-                        Daftar Pelanggan
-                    </flux:sidebar.item>
+                        <flux:sidebar.item icon="users" href="{{ route('customer.index') }}"
+                            :current="request()->routeIs('customer.*')">
+                            Daftar Pelanggan
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="shopping-bag" href="{{ route('product.index') }}"
-                        :current="request()->routeIs('product.*')">
-                        Katalog Produk
-                    </flux:sidebar.item>
+                        <flux:sidebar.item icon="shopping-bag" href="{{ route('product.index') }}"
+                            :current="request()->routeIs('product.*')">
+                            Katalog Produk
+                        </flux:sidebar.item>
 
-                    <flux:sidebar.item icon="cog-6-tooth" href="{{ route('setting.index') }}"
-                        :current="request()->routeIs('setting.*')">
-                        Pengaturan Toko
-                    </flux:sidebar.item>
+                        <flux:sidebar.item icon="cog-6-tooth" href="{{ route('setting.index') }}"
+                            :current="request()->routeIs('setting.*')">
+                            Pengaturan Toko
+                        </flux:sidebar.item>
 
-                </flux:sidebar.group>
+                    </flux:sidebar.group>
+                @endif
 
             @endauth
         </flux:sidebar.nav>
-
-        {{-- <flux:sidebar.spacer />
-
-        <flux:sidebar.nav>
-            <flux:sidebar.item icon="cog-6-tooth" href="">Settings</flux:sidebar.item>
-            <flux:sidebar.item icon="information-circle" href="#">Help</flux:sidebar.item>
-        </flux:sidebar.nav> --}}
     </flux:sidebar>
 
     {{ $slot }}

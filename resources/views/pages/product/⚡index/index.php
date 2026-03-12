@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\HandlesAuthorization;
 use App\Models\Product;
 use App\Services\ProductService;
 use Livewire\Attributes\Computed;
@@ -8,6 +9,7 @@ use Livewire\WithPagination;
 
 new class extends Component
 {
+    use HandlesAuthorization;
     use WithPagination;
 
     public $product_id;
@@ -20,6 +22,11 @@ new class extends Component
 
     public $price;
 
+    public function mount()
+    {
+        $this->authorize('viewAny', [Product::class, tenant()]);
+    }
+
     protected function rules()
     {
         return [
@@ -31,23 +38,29 @@ new class extends Component
 
     public function save(ProductService $service)
     {
-        $this->validate();
+        $this->authorizeAction(
+            function () use ($service) {
+                $this->authorize('create', [Product::class, tenant()]);
 
-        $service->save([
-            'id' => $this->product_id,
-            'code' => $this->code,
-            'name' => $this->name,
-            'price' => $this->price,
-        ]);
+                $this->validate();
 
-        $this->resetForm();
+                $service->save([
+                    'id' => $this->product_id,
+                    'code' => $this->code,
+                    'name' => $this->name,
+                    'price' => $this->price,
+                ]);
 
-        $this->modal('add-product')->close();
+                $this->resetForm();
 
-        $this->dispatch('notify',
-            title: 'Berhasil',
-            message: 'Data produk berhasil disimpan.',
-            type: 'success'
+                $this->modal('add-product')->close();
+
+                $this->dispatch('notify',
+                    title: 'Berhasil',
+                    message: 'Data produk berhasil disimpan.',
+                    type: 'success'
+                );
+            }
         );
     }
 
@@ -72,17 +85,21 @@ new class extends Component
 
     public function delete(ProductService $service)
     {
-        $service->delete($this->delete_id);
+        $this->authorizeAction(function () use ($service) {
+            $product = authorize_model('delete', Product::class, $this->delete_id);
 
-        $this->reset('delete_id');
+            $service->delete($product->id);
 
-        $this->modal('delete-product')->close();
+            $this->reset('delete_id');
 
-        $this->dispatch('notify',
-            title: 'Berhasil',
-            message: 'Data produk berhasil dihapus.',
-            type: 'success'
-        );
+            $this->modal('delete-product')->close();
+
+            $this->dispatch('notify',
+                title: 'Berhasil',
+                message: 'Data produk berhasil dihapus.',
+                type: 'success'
+            );
+        });
     }
 
     public function resetForm()

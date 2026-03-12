@@ -97,4 +97,21 @@ class User extends Authenticatable
 
         return $membership?->pivot->role;
     }
+
+    public function hasBusinessPermission($businessId, $permission)
+    {
+        $role = $this->roleInBusiness($businessId);
+
+        if (! $role) {
+            return false;
+        }
+
+        if ($role === 'owner') {
+            return true;
+        }
+
+        $roleModel = \Spatie\Permission\Models\Role::where('name', $role)->first();
+
+        return $roleModel?->hasPermissionTo($permission);
+    }
 }

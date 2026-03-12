@@ -2,66 +2,49 @@
 
 namespace App\Policies;
 
+use App\Models\Business;
 use App\Models\Invoice;
 use App\Models\User;
 
 class InvoicePolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user, Business $business)
     {
-        $role = $user->roleInBusiness(tenant()->id);
-
-        return $role === 'owner' || $role === 'admin';
+        return $user->hasBusinessPermission(
+            $business->id,
+            'view invoices'
+        );
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Invoice $invoice): bool
+    public function create(User $user, Business $business)
     {
-        return false;
+        return $user->hasBusinessPermission(
+            $business->id,
+            'create invoices'
+        );
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function update(User $user, Invoice $invoice)
     {
-        return false;
+        return $user->hasBusinessPermission(
+            $invoice->business_id,
+            'update invoices'
+        );
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Invoice $invoice): bool
+    public function delete(User $user, Invoice $invoice)
     {
-        return false;
+        return $user->hasBusinessPermission(
+            $invoice->business_id,
+            'delete invoices'
+        );
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Invoice $invoice): bool
+    public function send(User $user, Invoice $invoice)
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Invoice $invoice): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Invoice $invoice): bool
-    {
-        return false;
+        return $user->hasBusinessPermission(
+            $invoice->business_id,
+            'send invoices'
+        );
     }
 }

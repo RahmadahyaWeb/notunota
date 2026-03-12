@@ -27,6 +27,8 @@ new class extends Component
 
     public function mount()
     {
+        $this->authorize('manageUsers', tenant());
+
         $this->business = tenant();
     }
 

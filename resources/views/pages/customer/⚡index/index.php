@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\HandlesAuthorization;
 use App\Models\Customer;
 use App\Services\CustomerService;
 use Livewire\Attributes\Computed;
@@ -8,6 +9,7 @@ use Livewire\WithPagination;
 
 new class extends Component
 {
+    use HandlesAuthorization;
     use WithPagination;
 
     public $customer_id;
@@ -24,6 +26,11 @@ new class extends Component
 
     public $address;
 
+    public function mount()
+    {
+        $this->authorize('viewAny', [Customer::class, tenant()]);
+    }
+
     protected function rules()
     {
         return [
@@ -37,26 +44,42 @@ new class extends Component
 
     public function save(CustomerService $service)
     {
-        $this->validate();
+        $this->authorizeAction(function () use ($service) {
 
-        $service->save([
-            'id' => $this->customer_id,
-            'code' => $this->code,
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'address' => $this->address,
-        ]);
+            $this->authorize('create', [Customer::class, tenant()]);
 
-        $this->resetForm();
+            $this->validate();
 
-        $this->modal('add-customer')->close();
+            $service->save([
+                'id' => $this->customer_id,
+                'code' => $this->code,
+                'name' => $this->name,
+                'email' => $this->email,
+                'phone' => $this->phone,
+                'address' => $this->address,
+            ]);
 
-        $this->dispatch('notify',
-            title: 'Berhasil',
-            message: 'Data pelanggan berhasil disimpan.',
-            type: 'success'
-        );
+            $this->resetForm();
+
+            $this->modal('add-customer')->close();
+
+            $this->dispatch(
+                'notify',
+                title: 'Berhasil',
+                message: 'Data pelanggan berhasil disimpan.',
+                type: 'success'
+            );
+        }, function () {
+
+            $this->modal('add-customer')->close();
+
+            $this->dispatch(
+                'notify',
+                title: 'Akses ditolak',
+                message: 'Anda tidak memiliki izin untuk melakukan aksi ini.',
+                type: 'error'
+            );
+        });
     }
 
     public function edit($id)
@@ -82,17 +105,23 @@ new class extends Component
 
     public function delete(CustomerService $service)
     {
-        $service->delete($this->delete_id);
+        $this->authorizeAction(function () use ($service) {
 
-        $this->reset('delete_id');
+            $customer = authorize_model('delete', Customer::class, $this->delete_id);
 
-        $this->modal('delete-customer')->close();
+            $service->delete($customer->id);
 
-        $this->dispatch('notify',
-            title: 'Berhasil',
-            message: 'Data pelanggan berhasil dihapus.',
-            type: 'success'
-        );
+            $this->reset('delete_id');
+
+            $this->modal('delete-customer')->close();
+
+            $this->dispatch(
+                'notify',
+                title: 'Berhasil',
+                message: 'Data pelanggan berhasil dihapus.',
+                type: 'success'
+            );
+        });
     }
 
     public function resetForm()

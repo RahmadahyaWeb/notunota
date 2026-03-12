@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\HandlesAuthorization;
 use App\Models\Invoice;
 use App\Services\InvoiceService;
 use Livewire\Attributes\Computed;
@@ -9,6 +10,7 @@ use Livewire\WithPagination;
 
 new class extends Component
 {
+    use HandlesAuthorization;
     use WithPagination;
 
     public $delete_id;
@@ -27,7 +29,7 @@ new class extends Component
 
     public function mount()
     {
-        $this->authorize('viewAny', Invoice::class);
+        $this->authorize('viewAny', [Invoice::class, tenant()]);
     }
 
     #[Computed]
@@ -51,17 +53,22 @@ new class extends Component
 
     public function delete(InvoiceService $service)
     {
-        $service->delete($this->delete_id);
+        $this->authorizeAction(function () use ($service) {
+            $invoice = authorize_model('delete', Invoice::class, $this->delete_id);
 
-        $this->reset('delete_id');
+            $service->delete($invoice->id);
 
-        $this->modal('delete-invoice')->close();
+            $this->reset('delete_id');
 
-        $this->dispatch('notify',
-            title: 'Berhasil',
-            message: 'Data invoice berhasil dihapus.',
-            type: 'success'
-        );
+            $this->modal('delete-invoice')->close();
+
+            $this->dispatch(
+                'notify',
+                title: 'Berhasil',
+                message: 'Data invoice berhasil dihapus.',
+                type: 'success'
+            );
+        });
     }
 
     public function updatedSelectAll($value)
@@ -105,32 +112,36 @@ new class extends Component
 
     public function sendInvoice($id)
     {
-        $invoice = Invoice::with(['customer', 'business'])
-            ->findOrFail($id);
+        $this->authorizeAction(function () use ($id) {
+            authorize_model('send', Invoice::class, $id);
 
-        $customer = $invoice->customer;
+            $invoice = Invoice::with(['customer', 'business'])
+                ->findOrFail($id);
 
-        $invoice_link = route('invoice.preview', $invoice->public_token);
+            $customer = $invoice->customer;
 
-        $message = "Halo {$customer->name}\n\n"
-            ."Terima kasih sudah berbelanja di {$invoice->business->name}.\n"
-            ."Berikut invoice transaksi Anda:\n\n"
-            ."{$invoice->invoice_number}\n"
-            ."{$invoice_link}\n\n"
-            ."Silakan dibuka untuk melihat detail dan pembayaran.\n"
-            .'Terima kasih.';
+            $invoice_link = route('invoice.preview', $invoice->public_token);
 
-        $encoded_message = urlencode($message);
+            $message = "Halo {$customer->name}\n\n"
+                ."Terima kasih sudah berbelanja di {$invoice->business->name}.\n"
+                ."Berikut invoice transaksi Anda:\n\n"
+                ."{$invoice->invoice_number}\n"
+                ."{$invoice_link}\n\n"
+                ."Silakan dibuka untuk melihat detail dan pembayaran.\n"
+                .'Terima kasih.';
 
-        $phone = preg_replace('/[^0-9]/', '', $customer->phone);
+            $encoded_message = urlencode($message);
 
-        if (substr($phone, 0, 1) == '0') {
-            $phone = '62'.substr($phone, 1);
-        }
+            $phone = preg_replace('/[^0-9]/', '', $customer->phone);
 
-        $wa_link = "https://wa.me/{$phone}?text={$encoded_message}";
+            if (substr($phone, 0, 1) == '0') {
+                $phone = '62'.substr($phone, 1);
+            }
 
-        $this->dispatch('open-wa', url: $wa_link);
+            $wa_link = "https://wa.me/{$phone}?text={$encoded_message}";
+
+            $this->dispatch('open-wa', url: $wa_link);
+        });
     }
 
     #[Computed]

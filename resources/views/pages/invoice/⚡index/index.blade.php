@@ -155,11 +155,15 @@
                                         wire:click="sendInvoice({{ $invoice->id }})">
                                         Bagikan via WhatsApp
                                     </flux:menu.item>
-                                    <flux:menu.separator />
-                                    <flux:menu.item variant="danger" icon="trash"
-                                        wire:click="confirmDelete({{ $invoice->id }})">
-                                        Hapus
-                                    </flux:menu.item>
+
+                                    @if (canBusiness('delete invoices'))
+                                        <flux:menu.separator />
+                                        <flux:menu.item variant="danger" icon="trash"
+                                            wire:click="confirmDelete({{ $invoice->id }})">
+                                            Hapus
+                                        </flux:menu.item>
+                                    @endif
+
                                 </flux:menu>
                             </flux:dropdown>
                         </flux:table.cell>

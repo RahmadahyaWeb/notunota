@@ -6,11 +6,13 @@
         </div>
 
         <div class="flex items-center">
-            <flux:modal.trigger name="add-product">
-                <flux:button variant="primary" icon="plus" wire:click="resetForm" class="w-full sm:w-auto">
-                    Tambah Produk
-                </flux:button>
-            </flux:modal.trigger>
+            @if (canBusiness('create products'))
+                <flux:modal.trigger name="add-product">
+                    <flux:button variant="primary" icon="plus" wire:click="resetForm" class="w-full sm:w-auto">
+                        Tambah Produk
+                    </flux:button>
+                </flux:modal.trigger>
+            @endif
         </div>
     </div>
 
@@ -40,19 +42,26 @@
                         <flux:table.cell>{{ $product->name }}</flux:table.cell>
                         <flux:table.cell>Rp {{ number_format($product->price, 0, ',', '.') }}</flux:table.cell>
                         <flux:table.cell class="text-right">
-                            <flux:dropdown>
-                                <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" />
-                                <flux:menu>
-                                    <flux:menu.item icon="pencil-square" wire:click="edit({{ $product->id }})">
-                                        Edit
-                                    </flux:menu.item>
-                                    <flux:menu.separator />
-                                    <flux:menu.item variant="danger" icon="trash"
-                                        wire:click="confirmDelete({{ $product->id }})">
-                                        Hapus
-                                    </flux:menu.item>
-                                </flux:menu>
-                            </flux:dropdown>
+                            @if (canBusiness('update products') || canBusiness('delete products'))
+                                <flux:dropdown>
+                                    <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" />
+                                    <flux:menu>
+                                        @if (canBusiness('update products'))
+                                            <flux:menu.item icon="pencil-square" wire:click="edit({{ $product->id }})">
+                                                Edit
+                                            </flux:menu.item>
+                                        @endif
+
+                                        @if (canBusiness('delete products'))
+                                            <flux:menu.separator />
+                                            <flux:menu.item variant="danger" icon="trash"
+                                                wire:click="confirmDelete({{ $product->id }})">
+                                                Hapus
+                                            </flux:menu.item>
+                                        @endif
+                                    </flux:menu>
+                                </flux:dropdown>
+                            @endif
                         </flux:table.cell>
                     </flux:table.row>
                 @empty

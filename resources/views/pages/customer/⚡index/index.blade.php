@@ -51,11 +51,14 @@
                                     <flux:menu.item icon="pencil-square" wire:click="edit({{ $customer->id }})">
                                         Edit
                                     </flux:menu.item>
-                                    <flux:menu.separator />
-                                    <flux:menu.item variant="danger" icon="trash"
-                                        wire:click="confirmDelete({{ $customer->id }})">
-                                        Hapus
-                                    </flux:menu.item>
+
+                                    @if (canBusiness('delete customers'))
+                                        <flux:menu.separator />
+                                        <flux:menu.item variant="danger" icon="trash"
+                                            wire:click="confirmDelete({{ $customer->id }})">
+                                            Hapus
+                                        </flux:menu.item>
+                                    @endif
                                 </flux:menu>
                             </flux:dropdown>
                         </flux:table.cell>
